@@ -1,6 +1,10 @@
 spring:
   config:
     import: optional:secrets.yaml
+  devtools:
+    livereload:
+      enabled: true
+      port: 32729
   application:
     name: bookHaven
   datasource:
