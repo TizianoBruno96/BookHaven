@@ -20,7 +20,7 @@ public class Book {
 
     @NotNull
     @Column(name = "title")
-    private String Title;
+    private String title;
 
     @NotNull
     @Column(name = "num_pages")
