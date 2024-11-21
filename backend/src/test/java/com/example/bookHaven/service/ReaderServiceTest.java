@@ -11,17 +11,16 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
 public class ReaderServiceTest {
 
     @Mock
@@ -37,57 +36,67 @@ public class ReaderServiceTest {
     }
 
     @Test
-    void create_shouldCreateNewReader() {
-        when(readerRepository.existsByUsername("testUser")).thenReturn(false);
-
+    void create_shouldSaveAndReturnReader() {
+        // Arrange
         Reader reader = new Reader();
         reader.setUsername("testUser");
+        reader.setEmail("testUser@example.com");
 
-        boolean result = readerService.create(reader);
+        when(readerRepository.existsByUsername("testUser")).thenReturn(false);
+        when(readerRepository.save(reader)).thenReturn(reader);
 
+        // Act
+        Reader result = readerService.create(reader);
+
+        // Assert
         verify(readerRepository, times(1)).save(reader);
-        assertFalse(result);
-    }
-
-
-    @Test
-    void create_shouldNotCreateExistingReader() {
-        Reader reader = new Reader();
-        reader.setUsername("existingUser");
-
-        when(readerRepository.existsByUsername("existingUser")).thenReturn(true);
-
-        boolean result = readerService.create(reader);
-
-        verify(readerRepository, never()).save(any());
-        assertFalse(result);
+        assertNotNull(result);
+        assertEquals("testUser", result.getUsername());
     }
 
     @Test
-    void update_shouldUpdateExistingReader() {
+    void create_shouldThrowExceptionWhenUsernameExists() {
+        // Arrange
         Reader reader = new Reader();
         reader.setUsername("testUser");
 
         when(readerRepository.existsByUsername("testUser")).thenReturn(true);
-        when(readerRepository.findByUsername("testUser")).thenReturn(Optional.of(reader));
 
-        boolean result = readerService.update(reader);
-
-        verify(readerRepository, times(1)).save(reader);
-        assertTrue(result);
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> readerService.create(reader));
+        verify(readerRepository, never()).save(any());
     }
 
     @Test
-    void update_shouldNotUpdateNonExistingReader() {
+    void update_shouldSaveAndReturnUpdatedReader() {
+        // Arrange
         Reader reader = new Reader();
-        reader.setUsername("nonExistingUser");
+        reader.setUsername("testUser");
+        reader.setEmail("updatedEmail@example.com");
 
-        when(readerRepository.existsByUsername("nonExistingUser")).thenReturn(false);
+        when(readerRepository.existsByUsername("testUser")).thenReturn(true);
+        when(readerRepository.save(reader)).thenReturn(reader);
 
-        boolean result = readerService.update(reader);
+        // Act
+        Reader result = readerService.update(reader);
 
+        // Assert
+        verify(readerRepository, times(1)).save(reader);
+        assertNotNull(result);
+        assertEquals("updatedEmail@example.com", result.getEmail());
+    }
+
+    @Test
+    void update_shouldThrowExceptionWhenUsernameDoesNotExist() {
+        // Arrange
+        Reader reader = new Reader();
+        reader.setUsername("nonExistentUser");
+
+        when(readerRepository.existsByUsername("nonExistentUser")).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(NoSuchElementException.class, () -> readerService.update(reader));
         verify(readerRepository, never()).save(any());
-        assertFalse(result);
     }
 
     @Test
