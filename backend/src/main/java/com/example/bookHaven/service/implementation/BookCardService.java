@@ -17,66 +17,84 @@ public class BookCardService implements IBookCardService {
 
     @Override
     public BookCard create(BookCard bookCard) {
-        return new BookCard();
+        return repository.save(bookCard);
     }
 
     @Override
     public BookCard update(BookCard bookCard) {
-        return new BookCard();
+        if (!repository.existsById(bookCard.getId())) {
+            throw new IllegalArgumentException("BookCard with ID " + bookCard.getId() + " does not exist.");
+        }
+        return repository.save(bookCard);
     }
 
     @Override
     public BookCard findById(String id) {
-        return null;
+        return repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("BookCard with ID " + id + " not found."));
     }
 
     @Override
     public List<BookCard> findByBook(String bookId) {
-        return List.of();
+        return repository.findByBookId(bookId);
     }
 
     @Override
     public List<BookCard> findByBook(Book book) {
-        return List.of();
+        return repository.findByBook(book);
     }
 
     @Override
     public boolean existsById(String id) {
-        return false;
+        return repository.existsById(id);
     }
 
     @Override
     public boolean existsByBook(String bookId) {
-        return false;
+        return repository.existsByBookId(bookId);
     }
 
     @Override
     public boolean existsByBook(Book book) {
-        return false;
+        return repository.existsByBook(book);
     }
 
     @Override
     public boolean deleteById(String id) {
-        return false;
+        if (!repository.existsById(id)) {
+            return false;
+        }
+        repository.deleteById(id);
+        return true;
     }
 
     @Override
     public boolean deleteByBook(String bookId) {
-        return false;
+        List<BookCard> bookCards = repository.findByBookId(bookId);
+        if (bookCards.isEmpty()) {
+            return false;
+        }
+        repository.deleteAll(bookCards);
+        return true;
     }
 
     @Override
     public boolean deleteByBook(Book book) {
-        return false;
+        List<BookCard> bookCards = repository.findByBook(book);
+        if (bookCards.isEmpty()) {
+            return false;
+        }
+        repository.deleteAll(bookCards);
+        return true;
     }
 
     @Override
     public List<BookCard> listAll() {
-        return List.of();
+        return repository.findAll();
     }
 
     @Override
     public int count() {
-        return 0;
+        return (int) repository.count();
     }
 }

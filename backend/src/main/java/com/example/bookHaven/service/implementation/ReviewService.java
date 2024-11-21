@@ -14,100 +14,128 @@ import java.util.List;
 public class ReviewService implements IReviewService {
 
     @Autowired
-    ReviewRepository repository;
+    private ReviewRepository repository;
 
     @Override
     public Review create(Review review) {
-        return new Review();
+        return repository.save(review);
     }
 
     @Override
     public Review update(Review review) {
-        return new Review();
+        if (!repository.existsById(review.getId())) {
+            throw new IllegalArgumentException("Review with ID " + review.getId() + " does not exist.");
+        }
+        return repository.save(review);
     }
 
     @Override
     public Review findById(String id) {
-        return null;
+        return repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Review with ID " + id + " not found."));
     }
 
     @Override
     public List<Review> findByBook(String bookId) {
-        return List.of();
+        return repository.findByBookId(bookId);
     }
 
     @Override
     public List<Review> findByBook(Book book) {
-        return List.of();
+        return repository.findByBook(book);
     }
 
     @Override
     public List<Review> findByReader(String readerId) {
-        return List.of();
+        return repository.findByReaderId(readerId);
     }
 
     @Override
     public List<Review> findByReader(Reader reader) {
-        return List.of();
+        return repository.findByReader(reader);
     }
 
     @Override
     public boolean existsById(String id) {
-        return false;
+        return repository.existsById(id);
     }
 
     @Override
     public boolean existsByBook(String bookId) {
-        return false;
+        return repository.existsByBookId(bookId);
     }
 
     @Override
     public boolean existsByBook(Book book) {
-        return false;
+        return repository.existsByBook(book);
     }
 
     @Override
     public boolean existsByReader(String readerId) {
-        return false;
+        return repository.existsByReaderId(readerId);
     }
 
     @Override
     public boolean existsByReader(Reader reader) {
-        return false;
+        return repository.existsByReader(reader);
     }
 
     @Override
     public boolean deleteById(String id) {
-        return false;
+        if (!repository.existsById(id)) {
+            return false;
+        }
+        repository.deleteById(id);
+        return true;
     }
 
     @Override
     public boolean deleteByBook(String bookId) {
-        return false;
+        List<Review> reviews = repository.findByBookId(bookId);
+        if (reviews.isEmpty()) {
+            return false;
+        }
+        repository.deleteAll(reviews);
+        return true;
     }
 
     @Override
     public boolean deleteByBook(Book book) {
-        return false;
+        List<Review> reviews = repository.findByBook(book);
+        if (reviews.isEmpty()) {
+            return false;
+        }
+        repository.deleteAll(reviews);
+        return true;
     }
 
     @Override
     public boolean deleteByReader(String readerId) {
-        return false;
+        List<Review> reviews = repository.findByReaderId(readerId);
+        if (reviews.isEmpty()) {
+            return false;
+        }
+        repository.deleteAll(reviews);
+        return true;
     }
 
     @Override
     public boolean deleteByReader(Reader reader) {
-        return false;
+        List<Review> reviews = repository.findByReader(reader);
+        if (reviews.isEmpty()) {
+            return false;
+        }
+        repository.deleteAll(reviews);
+        return true;
     }
 
     @Override
     public List<Review> listAll() {
-        return List.of();
+        return repository.findAll();
     }
 
     @Override
-    public int could() {
-        return 0;
+    public int count() {
+        return (int) repository.count();
     }
 }

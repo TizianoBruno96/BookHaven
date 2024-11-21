@@ -14,100 +14,128 @@ import java.util.List;
 public class HistoryService implements IHistoryService {
 
     @Autowired
-    HistoryRepository repository;
+    private HistoryRepository repository;
 
     @Override
     public History create(History history) {
-        return new History();
+        return repository.save(history);
     }
 
     @Override
     public History update(History history) {
-        return new History();
+        if (!repository.existsById(history.getId())) {
+            throw new IllegalArgumentException("History with ID " + history.getId() + " does not exist.");
+        }
+        return repository.save(history);
     }
 
     @Override
     public History findById(String id) {
-        return null;
+        return repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("History with ID " + id + " not found."));
     }
 
     @Override
     public List<History> findByBook(String bookId) {
-        return List.of();
+        return repository.findByBookId(bookId);
     }
 
     @Override
     public List<History> findByBook(Book book) {
-        return List.of();
+        return repository.findByBook(book);
     }
 
     @Override
     public List<History> findByReader(String readerId) {
-        return List.of();
+        return repository.findByReaderId(readerId);
     }
 
     @Override
     public List<History> findByReader(Reader reader) {
-        return List.of();
+        return repository.findByReader(reader);
     }
 
     @Override
     public boolean existsById(String id) {
-        return false;
+        return repository.existsById(id);
     }
 
     @Override
     public boolean existsByBook(String bookId) {
-        return false;
+        return repository.existsByBookId(bookId);
     }
 
     @Override
     public boolean existsByBook(Book book) {
-        return false;
+        return repository.existsByBook(book);
     }
 
     @Override
     public boolean existsByReader(String readerId) {
-        return false;
+        return repository.existsByReaderId(readerId);
     }
 
     @Override
     public boolean existsByReader(Reader reader) {
-        return false;
+        return repository.existsByReader(reader);
     }
 
     @Override
     public boolean deleteById(String id) {
-        return false;
+        if (!repository.existsById(id)) {
+            return false;
+        }
+        repository.deleteById(id);
+        return true;
     }
 
     @Override
     public boolean deleteByBook(String bookId) {
-        return false;
+        List<History> histories = repository.findByBookId(bookId);
+        if (histories.isEmpty()) {
+            return false;
+        }
+        repository.deleteAll(histories);
+        return true;
     }
 
     @Override
     public boolean deleteByBook(Book book) {
-        return false;
+        List<History> histories = repository.findByBook(book);
+        if (histories.isEmpty()) {
+            return false;
+        }
+        repository.deleteAll(histories);
+        return true;
     }
 
     @Override
     public boolean deleteByReader(String readerId) {
-        return false;
+        List<History> histories = repository.findByReaderId(readerId);
+        if (histories.isEmpty()) {
+            return false;
+        }
+        repository.deleteAll(histories);
+        return true;
     }
 
     @Override
     public boolean deleteByReader(Reader reader) {
-        return false;
+        List<History> histories = repository.findByReader(reader);
+        if (histories.isEmpty()) {
+            return false;
+        }
+        repository.deleteAll(histories);
+        return true;
     }
 
     @Override
     public List<History> listAll() {
-        return List.of();
+        return repository.findAll();
     }
 
     @Override
-    public int could() {
-        return 0;
+    public int count() {
+        return (int) repository.count();
     }
 }
