@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface IHistoryService {
 
-    boolean create(History history);
-    boolean update(History history);
+    History create(History history);
+    History update(History history);
     History findById(String id);
     List<History> findByBook(String bookId);
     List<History> findByBook(Book book);

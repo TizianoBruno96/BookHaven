@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface IReviewService {
 
-    boolean create(Review review);
-    boolean update(Review review);
+    Review create(Review review);
+    Review update(Review review);
     Review findById(String id);
     List<Review> findByBook(String bookId);
     List<Review> findByBook(Book book);

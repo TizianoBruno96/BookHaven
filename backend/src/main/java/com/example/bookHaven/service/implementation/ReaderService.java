@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -18,24 +19,22 @@ public class ReaderService implements IReaderService {
 
     @Override
     @Transactional
-    public boolean create(Reader reader) {
+    public Reader create(Reader reader) {
         if (existByUsername(reader.getUsername())) {
-            return false;
+            throw new IllegalArgumentException();
         }
 
-        repository.save(reader);
-        return existByUsername(reader.getUsername());
+        return repository.save(reader);
     }
 
     @Override
     @Transactional
-    public boolean update(Reader reader) {
+    public Reader update(Reader reader) {
         if (!existByUsername(reader.getUsername())) {
-            return false;
+            throw new NoSuchElementException();
         }
 
-        repository.save(reader);
-        return findByUsername(reader.getUsername()).equals(reader);
+        return repository.save(reader);
     }
 
     @Override

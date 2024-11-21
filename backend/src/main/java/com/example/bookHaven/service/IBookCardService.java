@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface IBookCardService {
 
-    boolean create(BookCard bookCard);
-    boolean update(BookCard bookCard);
+    BookCard create(BookCard bookCard);
+    BookCard update(BookCard bookCard);
     BookCard findById(String id);
     List<BookCard> findByBook(String bookId);
     List<BookCard> findByBook(Book book);

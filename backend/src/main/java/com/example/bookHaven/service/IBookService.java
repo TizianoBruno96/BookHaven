@@ -5,8 +5,8 @@ import com.example.bookHaven.entity.Book;
 import java.util.List;
 
 public interface IBookService {
-    boolean create(Book book);
-    boolean update(Book book);
+    Book create(Book book);
+    Book update(Book book);
     Book findById(String id);
     List<Book> searchBooks(String title, String genre, String author);
     boolean existsById(String id);

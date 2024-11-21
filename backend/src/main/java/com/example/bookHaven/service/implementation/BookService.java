@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -20,24 +21,22 @@ public class BookService implements IBookService {
 
     @Override
     @Transactional
-    public boolean create(Book book) {
+    public Book create(Book book) {
         if (existsByTitle(book.getTitle()) && existsByAuthor(book.getAuthor()) && existsByGenre(book.getGenre())) {
-            return false;
+            throw new IllegalArgumentException();
         }
 
-        repository.save(book);
-        return existsByTitle(book.getTitle()) && existsByAuthor(book.getAuthor()) && existsByGenre(book.getGenre());
+        return repository.save(book);
     }
 
     @Override
     @Transactional
-    public boolean update(Book book) {
+    public Book update(Book book) {
         if (!(existsByTitle(book.getTitle()) && existsByAuthor(book.getAuthor()) && existsByGenre(book.getGenre()))) {
-            return false;
+            throw new NoSuchElementException();
         }
 
-        repository.save(book);
-        return existsByTitle(book.getTitle()) && existsByAuthor(book.getAuthor()) && existsByGenre(book.getGenre());
+        return repository.save(book);
     }
 
     @Override

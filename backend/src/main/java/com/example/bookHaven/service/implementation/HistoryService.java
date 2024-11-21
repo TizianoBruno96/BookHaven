@@ -17,13 +17,13 @@ public class HistoryService implements IHistoryService {
     HistoryRepository repository;
 
     @Override
-    public boolean create(History history) {
-        return false;
+    public History create(History history) {
+        return new History();
     }
 
     @Override
-    public boolean update(History history) {
-        return false;
+    public History update(History history) {
+        return new History();
     }
 
     @Override

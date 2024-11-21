@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface IReaderService {
 
-    boolean create(Reader reader);
-    boolean update(Reader reader);
+    Reader create(Reader reader);
+    Reader update(Reader reader);
     Reader findById(String id);
     Reader findByUsername(String username);
     Reader findByEmail(String email);

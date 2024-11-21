@@ -17,13 +17,13 @@ public class ReviewService implements IReviewService {
     ReviewRepository repository;
 
     @Override
-    public boolean create(Review review) {
-        return false;
+    public Review create(Review review) {
+        return new Review();
     }
 
     @Override
-    public boolean update(Review review) {
-        return false;
+    public Review update(Review review) {
+        return new Review();
     }
 
     @Override

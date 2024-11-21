@@ -16,13 +16,13 @@ public class BookCardService implements IBookCardService {
     BookCardRepository repository;
 
     @Override
-    public boolean create(BookCard bookCard) {
-        return false;
+    public BookCard create(BookCard bookCard) {
+        return new BookCard();
     }
 
     @Override
-    public boolean update(BookCard bookCard) {
-        return false;
+    public BookCard update(BookCard bookCard) {
+        return new BookCard();
     }
 
     @Override
