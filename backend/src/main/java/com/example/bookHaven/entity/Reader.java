@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name = "reader")
 public class Reader {
 
-    private enum Gender {
+    public enum Gender {
         MALE,
         FEMALE,
         OTHER

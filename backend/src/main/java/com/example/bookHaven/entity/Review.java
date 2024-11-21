@@ -11,7 +11,7 @@ import java.time.Instant;
 @Table(name = "review")
 public class Review {
 
-    private enum Rating {
+    public enum Rating {
         VERY_BAD,
         BAD,
         DECENT,
