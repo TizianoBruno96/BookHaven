@@ -8,5 +8,4 @@ public class BookCardDTOResponse {
     private String Title;
     private String body;
     private byte[] image;
-    private BookDTOResponse bookDTOResponse;
 }
