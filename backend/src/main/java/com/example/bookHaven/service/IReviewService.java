@@ -26,5 +26,5 @@ public interface IReviewService {
     boolean deleteByReader(String readerId);
     boolean deleteByReader(Reader reader);
     List<Review> listAll();
-    int could();
+    int count();
 }

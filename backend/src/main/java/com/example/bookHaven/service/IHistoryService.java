@@ -26,5 +26,5 @@ public interface IHistoryService {
     boolean deleteByReader(String readerId);
     boolean deleteByReader(Reader reader);
     List<History> listAll();
-    int could();
+    int count();
 }
