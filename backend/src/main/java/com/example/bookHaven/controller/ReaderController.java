@@ -20,9 +20,6 @@ public class ReaderController {
     @Autowired
     private IReaderService readerService;
 
-    @Autowired
-    private ResponseFactory responseFactory;
-
     @PostMapping("/create")
     public ResponseEntity<?> createReader(@RequestBody ReaderDTORequest request) {
         try {
