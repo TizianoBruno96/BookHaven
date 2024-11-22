@@ -1,35 +1,36 @@
 package com.example.bookHaven.service;
 
-import com.example.bookHaven.entity.Book;
-import com.example.bookHaven.entity.BookCard;
+import com.example.bookHaven.entity.dto.request.BookCardDTORequest;
+import com.example.bookHaven.entity.dto.request.BookDTORequest;
+import com.example.bookHaven.entity.dto.response.BookCardDTOResponse;
 
 import java.util.List;
 
 public interface IBookCardService {
 
-    BookCard create(BookCard bookCard);
+    BookCardDTOResponse create(BookCardDTORequest request);
 
-    BookCard update(BookCard bookCard);
+    BookCardDTOResponse update(BookCardDTORequest request);
 
-    BookCard findById(String id);
+    BookCardDTOResponse findById(String id);
 
-    List<BookCard> findByBook(String bookId);
+    List<BookCardDTOResponse> findByBook(String bookId);
 
-    List<BookCard> findByBook(Book book);
+    List<BookCardDTOResponse> findByBook(BookDTORequest bookRequest);
 
     boolean existsById(String id);
 
     boolean existsByBook(String bookId);
 
-    boolean existsByBook(Book book);
+    boolean existsByBook(BookDTORequest bookRequest);
 
     boolean deleteById(String id);
 
     boolean deleteByBook(String bookId);
 
-    boolean deleteByBook(Book book);
+    boolean deleteByBook(BookDTORequest bookRequest);
 
-    List<BookCard> listAll();
+    List<BookCardDTOResponse> listAll();
 
     int count();
 }

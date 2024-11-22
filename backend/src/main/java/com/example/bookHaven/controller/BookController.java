@@ -1,6 +1,7 @@
 package com.example.bookHaven.controller;
 
-import com.example.bookHaven.entity.Book;
+import com.example.bookHaven.entity.dto.request.BookDTORequest;
+import com.example.bookHaven.entity.dto.response.BookDTOResponse;
 import com.example.bookHaven.service.IBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,9 @@ public class BookController {
     private IBookService bookService;
 
     @PostMapping("/create")
-    public ResponseEntity<Book> createBook(@RequestBody Book book) {
+    public ResponseEntity<BookDTOResponse> createBook(@RequestBody BookDTORequest bookDTORequest) {
         try {
-            Book createdBook = bookService.create(book);
+            BookDTOResponse createdBook = bookService.create(bookDTORequest);
             return ResponseEntity.ok(createdBook);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);
@@ -27,9 +28,9 @@ public class BookController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Book> updateBook(@RequestBody Book book) {
+    public ResponseEntity<BookDTOResponse> updateBook(@RequestBody BookDTORequest bookDTORequest) {
         try {
-            Book updatedBook = bookService.update(book);
+            BookDTOResponse updatedBook = bookService.update(bookDTORequest);
             return ResponseEntity.ok(updatedBook);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -37,8 +38,8 @@ public class BookController {
     }
 
     @GetMapping("/findById/{id}")
-    public ResponseEntity<Book> findById(@PathVariable String id) {
-        Book book = bookService.findById(id);
+    public ResponseEntity<BookDTOResponse> findById(@PathVariable String id) {
+        BookDTOResponse book = bookService.findById(id);
         if (book != null) {
             return ResponseEntity.ok(book);
         } else {
@@ -47,8 +48,8 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Book>> searchBooks(@RequestParam String title, @RequestParam String genre, @RequestParam String author) {
-        List<Book> books = bookService.searchBooks(title, genre, author);
+    public ResponseEntity<List<BookDTOResponse>> searchBooks(@RequestParam String title, @RequestParam String genre, @RequestParam String author) {
+        List<BookDTOResponse> books = bookService.searchBooks(title, genre, author);
         return ResponseEntity.ok(books);
     }
 
@@ -107,8 +108,8 @@ public class BookController {
     }
 
     @GetMapping("/listAll")
-    public ResponseEntity<List<Book>> listAllBooks() {
-        List<Book> books = bookService.listAll();
+    public ResponseEntity<List<BookDTOResponse>> listAllBooks() {
+        List<BookDTOResponse> books = bookService.listAll();
         return ResponseEntity.ok(books);
     }
 

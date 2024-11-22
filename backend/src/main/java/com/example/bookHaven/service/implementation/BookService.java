@@ -1,9 +1,12 @@
 package com.example.bookHaven.service.implementation;
 
 import com.example.bookHaven.entity.Book;
+import com.example.bookHaven.entity.dto.request.BookDTORequest;
+import com.example.bookHaven.entity.dto.response.BookDTOResponse;
 import com.example.bookHaven.repository.BookRepository;
 import com.example.bookHaven.repository.specification.BookSpecification;
 import com.example.bookHaven.service.IBookService;
+import com.example.bookHaven.service.mappers.BookMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,38 +22,45 @@ public class BookService implements IBookService {
     @Autowired
     private BookRepository repository;
 
+    @Autowired
+    private BookMapper mapper;
+
     @Override
     @Transactional
-    public Book create(Book book) {
-        if (existsByTitle(book.getTitle()) && existsByAuthor(book.getAuthor()) && existsByGenre(book.getGenre())) {
-            throw new IllegalArgumentException();
+    public BookDTOResponse create(BookDTORequest request) {
+        if (existsByTitle(request.getTitle()) && existsByAuthor(request.getAuthor()) && existsByGenre(request.getGenre())) {
+            throw new IllegalArgumentException("Book already exists.");
         }
 
-        return repository.save(book);
+        Book book = mapper.toEntity(request);
+        return mapper.toResponse(repository.save(book));
     }
 
     @Override
     @Transactional
-    public Book update(Book book) {
-        if (!(existsByTitle(book.getTitle()) && existsByAuthor(book.getAuthor()) && existsByGenre(book.getGenre()))) {
-            throw new NoSuchElementException();
+    public BookDTOResponse update(BookDTORequest request) {
+        if (!(existsByTitle(request.getTitle()) && existsByAuthor(request.getAuthor()) && existsByGenre(request.getGenre()))) {
+            throw new NoSuchElementException("Book not found.");
         }
 
-        return repository.save(book);
+        Book book = mapper.toEntity(request);
+        return mapper.toResponse(repository.save(book));
     }
 
     @Override
-    public Book findById(String id) {
+    public BookDTOResponse findById(String id) {
         Optional<Book> book = repository.findById(id);
-        return book.orElse(null);
+        return book.map(mapper::toResponse).orElse(null);
     }
 
     @Override
-    public List<Book> searchBooks(String title, String genre, String author) {
+    public List<BookDTOResponse> searchBooks(String title, String genre, String author) {
         Specification<Book> spec = Specification.where(BookSpecification.hasTitle(title))
                 .and(BookSpecification.hasGenre(genre))
                 .and(BookSpecification.hasAuthor(author));
-        return repository.findAll(spec);
+
+        List<Book> books = repository.findAll(spec);
+        return books.stream().map(mapper::toResponse).toList();
     }
 
     @Override
@@ -107,7 +117,8 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public List<Book> listAll() {
-        return repository.findAll();
+    public List<BookDTOResponse> listAll() {
+        List<Book> books = repository.findAll();
+        return books.stream().map(mapper::toResponse).toList();
     }
 }

@@ -1,8 +1,11 @@
 package com.example.bookHaven.service.implementation;
 
 import com.example.bookHaven.entity.Reader;
+import com.example.bookHaven.entity.dto.request.ReaderDTORequest;
+import com.example.bookHaven.entity.dto.response.ReaderDTOResponse;
 import com.example.bookHaven.repository.ReaderRepository;
 import com.example.bookHaven.service.IReaderService;
+import com.example.bookHaven.service.mappers.ReaderMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,42 +20,47 @@ public class ReaderService implements IReaderService {
     @Autowired
     ReaderRepository repository;
 
+    @Autowired
+    ReaderMapper mapper;
+
     @Override
     @Transactional
-    public Reader create(Reader reader) {
-        if (existByUsername(reader.getUsername())) {
+    public ReaderDTOResponse create(ReaderDTORequest request) {
+        if (existByUsername(request.getUsername())) {
             throw new IllegalArgumentException();
         }
 
-        return repository.save(reader);
+        Reader reader = mapper.toEntity(request);
+        return mapper.toResponse(repository.save(reader));
     }
 
     @Override
     @Transactional
-    public Reader update(Reader reader) {
-        if (!existByUsername(reader.getUsername())) {
+    public ReaderDTOResponse update(ReaderDTORequest request) {
+        if (!existByUsername(request.getUsername())) {
             throw new NoSuchElementException();
         }
 
-        return repository.save(reader);
+        Reader reader = mapper.toEntity(request);
+        return mapper.toResponse(repository.save(reader));
     }
 
     @Override
-    public Reader findById(String id) {
+    public ReaderDTOResponse findById(String id) {
         Optional<Reader> reader = repository.findById(id);
-        return reader.orElse(null);
+        return reader.map(mapper::toResponse).orElse(null);
     }
 
     @Override
-    public Reader findByUsername(String username) {
+    public ReaderDTOResponse findByUsername(String username) {
         Optional<Reader> reader = repository.findByUsername(username);
-        return reader.orElse(null);
+        return reader.map(mapper::toResponse).orElse(null);
     }
 
     @Override
-    public Reader findByEmail(String email) {
+    public ReaderDTOResponse findByEmail(String email) {
         Optional<Reader> reader = repository.findByEmail(email);
-        return reader.orElse(null);
+        return reader.map(mapper::toResponse).orElse(null);
     }
 
     @Override
@@ -101,8 +109,10 @@ public class ReaderService implements IReaderService {
     }
 
     @Override
-    public List<Reader> listAll() {
-        return repository.findAll();
+    public List<ReaderDTOResponse> listAll() {
+        return repository.findAll().stream()
+                .map(mapper::toResponse)
+                .toList();
     }
 
     @Override

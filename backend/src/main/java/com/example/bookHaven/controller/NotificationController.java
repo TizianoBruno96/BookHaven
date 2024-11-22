@@ -1,12 +1,16 @@
 package com.example.bookHaven.controller;
 
-import com.example.bookHaven.entity.Notification;
+import com.example.bookHaven.entity.dto.request.NotificationDTORequest;
+import com.example.bookHaven.entity.dto.request.ReaderDTORequest;
+import com.example.bookHaven.entity.dto.response.NotificationDTOResponse;
 import com.example.bookHaven.service.INotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/notification")
@@ -15,76 +19,81 @@ public class NotificationController {
     @Autowired
     private INotificationService notificationService;
 
-    @PostMapping("/create")
-    public ResponseEntity<Notification> createNotification(@RequestBody Notification notification) {
-        Notification createdNotification = notificationService.create(notification);
-        return ResponseEntity.ok(createdNotification);
+    @PostMapping
+    public ResponseEntity<NotificationDTOResponse> createNotification(@RequestBody NotificationDTORequest request) {
+        NotificationDTOResponse response = notificationService.create(request);
+        return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Notification> updateNotification(@RequestBody Notification notification) {
-        try {
-            Notification updatedNotification = notificationService.update(notification);
-            return ResponseEntity.ok(updatedNotification);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+    @PutMapping
+    public ResponseEntity<NotificationDTOResponse> updateNotification(@RequestBody NotificationDTORequest request) {
+        NotificationDTOResponse response = notificationService.update(request);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/findById/{id}")
-    public ResponseEntity<Notification> findById(@PathVariable String id) {
-        try {
-            Notification notification = notificationService.findById(id);
-            return ResponseEntity.ok(notification);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<NotificationDTOResponse> getNotificationById(@PathVariable String id) {
+        NotificationDTOResponse response = notificationService.findById(id);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/findByReader/{readerId}")
-    public ResponseEntity<List<Notification>> findByReader(@PathVariable String readerId) {
-        List<Notification> notifications = notificationService.findByReader(readerId);
-        return ResponseEntity.ok(notifications);
+    @GetMapping("/reader/{readerId}")
+    public ResponseEntity<List<NotificationDTOResponse>> getNotificationsByReaderId(@PathVariable String readerId) {
+        List<NotificationDTOResponse> response = notificationService.findByReader(readerId);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/existsById/{id}")
-    public ResponseEntity<Boolean> existsById(@PathVariable String id) {
+    @PostMapping("/reader")
+    public ResponseEntity<List<NotificationDTOResponse>> getNotificationsByReader(@RequestBody ReaderDTORequest readerRequest) {
+        List<NotificationDTOResponse> response = notificationService.findByReader(readerRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/exists/{id}")
+    public ResponseEntity<Boolean> checkNotificationExistsById(@PathVariable String id) {
         boolean exists = notificationService.existsById(id);
         return ResponseEntity.ok(exists);
     }
 
-    @GetMapping("/existsByReader/{readerId}")
-    public ResponseEntity<Boolean> existsByReader(@PathVariable String readerId) {
+    @GetMapping("/exists/reader/{readerId}")
+    public ResponseEntity<Boolean> checkNotificationsExistsByReaderId(@PathVariable String readerId) {
         boolean exists = notificationService.existsByReader(readerId);
         return ResponseEntity.ok(exists);
     }
 
-    @DeleteMapping("/deleteById/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable String id) {
-        boolean isDeleted = notificationService.deleteById(id);
-        return isDeleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    @PostMapping("/exists/reader")
+    public ResponseEntity<Boolean> checkNotificationsExistsByReader(@RequestBody ReaderDTORequest readerRequest) {
+        boolean exists = notificationService.existsByReader(readerRequest);
+        return ResponseEntity.ok(exists);
     }
 
-    @DeleteMapping("/deleteByReader/{readerId}")
-    public ResponseEntity<Void> deleteByReader(@PathVariable String readerId) {
-        boolean isDeleted = notificationService.deleteByReader(readerId);
-        return isDeleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteNotificationById(@PathVariable String id) {
+        boolean deleted = notificationService.deleteById(id);
+        return deleted ? new ResponseEntity<>(NO_CONTENT) : new ResponseEntity<>(NOT_FOUND);
+    }
+
+    @DeleteMapping("/reader/{readerId}")
+    public ResponseEntity<Void> deleteNotificationsByReaderId(@PathVariable String readerId) {
+        boolean deleted = notificationService.deleteByReader(readerId);
+        return deleted ? new ResponseEntity<>(NO_CONTENT) : new ResponseEntity<>(NOT_FOUND);
+    }
+
+    @PostMapping("/delete/reader")
+    public ResponseEntity<Void> deleteNotificationsByReader(@RequestBody ReaderDTORequest readerRequest) {
+        boolean deleted = notificationService.deleteByReader(readerRequest);
+        return deleted ? new ResponseEntity<>(NO_CONTENT) : new ResponseEntity<>(NOT_FOUND);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<NotificationDTOResponse>> listAllNotifications() {
+        List<NotificationDTOResponse> response = notificationService.listAll();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/count")
     public ResponseEntity<Integer> countNotifications() {
         int count = notificationService.count();
-        return ResponseEntity.ok(count);
-    }
-
-    @GetMapping("/listAll")
-    public ResponseEntity<List<Notification>> listAllNotifications() {
-        List<Notification> notifications = notificationService.listAll();
-        return ResponseEntity.ok(notifications);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+        return new ResponseEntity<>(count, OK);
     }
 }

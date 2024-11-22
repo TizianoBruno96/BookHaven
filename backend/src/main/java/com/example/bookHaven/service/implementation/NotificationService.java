@@ -2,12 +2,18 @@ package com.example.bookHaven.service.implementation;
 
 import com.example.bookHaven.entity.Notification;
 import com.example.bookHaven.entity.Reader;
+import com.example.bookHaven.entity.dto.request.NotificationDTORequest;
+import com.example.bookHaven.entity.dto.request.ReaderDTORequest;
+import com.example.bookHaven.entity.dto.response.NotificationDTOResponse;
 import com.example.bookHaven.repository.NotificationRepository;
+import com.example.bookHaven.repository.ReaderRepository;
 import com.example.bookHaven.service.INotificationService;
+import com.example.bookHaven.service.mappers.NotificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class NotificationService implements INotificationService {
@@ -15,33 +21,43 @@ public class NotificationService implements INotificationService {
     @Autowired
     private NotificationRepository repository;
 
+    @Autowired
+    private NotificationMapper mapper;
+
+    @Autowired
+    private ReaderRepository readerRepository;
+
     @Override
-    public Notification create(Notification notification) {
-        return repository.save(notification);
+    public NotificationDTOResponse create(NotificationDTORequest request) {
+        Notification notification = mapper.toEntity(request);
+        Notification savedNotification = repository.save(notification);
+        return mapper.toResponse(savedNotification);
     }
 
     @Override
-    public Notification update(Notification notification) {
-        if (!repository.existsById(notification.getId())) {
-            throw new IllegalArgumentException("Notification with ID " + notification.getId() + " does not exist.");
-        }
-        return repository.save(notification);
+    public NotificationDTOResponse update(NotificationDTORequest request) {
+        Notification notification = mapper.toEntity(request);
+        Notification updatedNotification = repository.save(notification);
+        return mapper.toResponse(updatedNotification);
     }
 
     @Override
-    public Notification findById(String id) {
-        return repository.findById(id)
+    public NotificationDTOResponse findById(String id) {
+        Notification notification = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Notification with ID " + id + " not found."));
+        return mapper.toResponse(notification);
     }
 
     @Override
-    public List<Notification> findByReader(String readerId) {
-        return repository.findByReaderId(readerId);
+    public List<NotificationDTOResponse> findByReader(String readerId) {
+        return repository.findByReaderId(readerId).stream().map(mapper::toResponse).toList();
     }
 
     @Override
-    public List<Notification> findByReader(Reader reader) {
-        return repository.findByReader(reader);
+    public List<NotificationDTOResponse> findByReader(ReaderDTORequest readerRequest) {
+        Reader reader = searchReaders(readerRequest);
+        if (reader == null) throw new NoSuchElementException("Reader not found");
+        return repository.findByReader(reader).stream().map(mapper::toResponse).toList();
     }
 
     @Override
@@ -55,7 +71,9 @@ public class NotificationService implements INotificationService {
     }
 
     @Override
-    public boolean existsByReader(Reader reader) {
+    public boolean existsByReader(ReaderDTORequest readerRequest) {
+        Reader reader = searchReaders(readerRequest);
+        if (reader == null) throw new NoSuchElementException("Reader not found");
         return repository.existsByReader(reader);
     }
 
@@ -79,7 +97,9 @@ public class NotificationService implements INotificationService {
     }
 
     @Override
-    public boolean deleteByReader(Reader reader) {
+    public boolean deleteByReader(ReaderDTORequest readerRequest) {
+        Reader reader = searchReaders(readerRequest);
+        if (reader == null) throw new NoSuchElementException("Reader not found");
         List<Notification> notifications = repository.findByReader(reader);
         if (notifications.isEmpty()) {
             return false;
@@ -89,12 +109,18 @@ public class NotificationService implements INotificationService {
     }
 
     @Override
-    public List<Notification> listAll() {
-        return repository.findAll();
+    public List<NotificationDTOResponse> listAll() {
+        return repository.findAll().stream()
+                .map(mapper::toResponse)
+                .toList();
     }
 
     @Override
     public int count() {
         return (int) repository.count();
+    }
+
+    private Reader searchReaders(ReaderDTORequest request) {
+        return readerRepository.findByUsername(request.getUsername()).orElse(null);
     }
 }

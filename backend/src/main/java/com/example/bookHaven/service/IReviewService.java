@@ -1,48 +1,49 @@
 package com.example.bookHaven.service;
 
-import com.example.bookHaven.entity.Book;
-import com.example.bookHaven.entity.Reader;
-import com.example.bookHaven.entity.Review;
+import com.example.bookHaven.entity.dto.request.BookDTORequest;
+import com.example.bookHaven.entity.dto.request.ReaderDTORequest;
+import com.example.bookHaven.entity.dto.request.ReviewDTORequest;
+import com.example.bookHaven.entity.dto.response.ReviewDTOResponse;
 
 import java.util.List;
 
 public interface IReviewService {
 
-    Review create(Review review);
+    ReviewDTOResponse create(ReviewDTORequest request);
 
-    Review update(Review review);
+    ReviewDTOResponse update(ReviewDTORequest request);
 
-    Review findById(String id);
+    ReviewDTOResponse findById(String id);
 
-    List<Review> findByBook(String bookId);
+    List<ReviewDTOResponse> findByBook(String bookId);
 
-    List<Review> findByBook(Book book);
+    List<ReviewDTOResponse> findByBook(BookDTORequest bookRequest);
 
-    List<Review> findByReader(String readerId);
+    List<ReviewDTOResponse> findByReader(String readerId);
 
-    List<Review> findByReader(Reader reader);
+    List<ReviewDTOResponse> findByReader(ReaderDTORequest readerRequest);
 
     boolean existsById(String id);
 
     boolean existsByBook(String bookId);
 
-    boolean existsByBook(Book book);
+    boolean existsByBook(BookDTORequest bookRequest);
 
     boolean existsByReader(String readerId);
 
-    boolean existsByReader(Reader reader);
+    boolean existsByReader(ReaderDTORequest readerRequest);
 
     boolean deleteById(String id);
 
     boolean deleteByBook(String bookId);
 
-    boolean deleteByBook(Book book);
+    boolean deleteByBook(BookDTORequest bookrequest);
 
     boolean deleteByReader(String readerId);
 
-    boolean deleteByReader(Reader reader);
+    boolean deleteByReader(ReaderDTORequest readerRequest);
 
-    List<Review> listAll();
+    List<ReviewDTOResponse> listAll();
 
     int count();
 }

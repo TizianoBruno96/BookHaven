@@ -14,5 +14,5 @@ public interface BookCardMapper {
     @Mapping(target = "book", ignore = true)
     BookCard toEntity(BookCardDTORequest request);
 
-    BookCardDTOResponse toDto(BookCard entity);
+    BookCardDTOResponse toResponse(BookCard entity);
 }

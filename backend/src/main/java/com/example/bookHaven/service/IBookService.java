@@ -1,17 +1,18 @@
 package com.example.bookHaven.service;
 
-import com.example.bookHaven.entity.Book;
+import com.example.bookHaven.entity.dto.request.BookDTORequest;
+import com.example.bookHaven.entity.dto.response.BookDTOResponse;
 
 import java.util.List;
 
 public interface IBookService {
-    Book create(Book book);
+    BookDTOResponse create(BookDTORequest request);
 
-    Book update(Book book);
+    BookDTOResponse update(BookDTORequest request);
 
-    Book findById(String id);
+    BookDTOResponse findById(String id);
 
-    List<Book> searchBooks(String title, String genre, String author);
+    List<BookDTOResponse> searchBooks(String title, String genre, String author);
 
     boolean existsById(String id);
 
@@ -31,5 +32,5 @@ public interface IBookService {
 
     long count();
 
-    List<Book> listAll();
+    List<BookDTOResponse> listAll();
 }

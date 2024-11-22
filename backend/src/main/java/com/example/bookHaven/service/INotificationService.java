@@ -1,34 +1,35 @@
 package com.example.bookHaven.service;
 
-import com.example.bookHaven.entity.Notification;
-import com.example.bookHaven.entity.Reader;
+import com.example.bookHaven.entity.dto.request.NotificationDTORequest;
+import com.example.bookHaven.entity.dto.request.ReaderDTORequest;
+import com.example.bookHaven.entity.dto.response.NotificationDTOResponse;
 
 import java.util.List;
 
 public interface INotificationService {
-    Notification create(Notification Notification);
+    NotificationDTOResponse create(NotificationDTORequest request);
 
-    Notification update(Notification Notification);
+    NotificationDTOResponse update(NotificationDTORequest request);
 
-    Notification findById(String id);
+    NotificationDTOResponse findById(String id);
 
-    List<Notification> findByReader(String ReaderId);
+    List<NotificationDTOResponse> findByReader(String readerId);
 
-    List<Notification> findByReader(Reader Reader);
+    List<NotificationDTOResponse> findByReader(ReaderDTORequest readerRequest);
 
     boolean existsById(String id);
 
-    boolean existsByReader(String ReaderId);
+    boolean existsByReader(String readerId);
 
-    boolean existsByReader(Reader Reader);
+    boolean existsByReader(ReaderDTORequest readerRequest);
 
     boolean deleteById(String id);
 
-    boolean deleteByReader(String ReaderId);
+    boolean deleteByReader(String readerId);
 
-    boolean deleteByReader(Reader Reader);
+    boolean deleteByReader(ReaderDTORequest readerRequest);
 
-    List<Notification> listAll();
+    List<NotificationDTOResponse> listAll();
 
     int count();
 }

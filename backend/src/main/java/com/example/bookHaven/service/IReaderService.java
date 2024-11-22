@@ -1,20 +1,21 @@
 package com.example.bookHaven.service;
 
-import com.example.bookHaven.entity.Reader;
+import com.example.bookHaven.entity.dto.request.ReaderDTORequest;
+import com.example.bookHaven.entity.dto.response.ReaderDTOResponse;
 
 import java.util.List;
 
 public interface IReaderService {
 
-    Reader create(Reader reader);
+    ReaderDTOResponse create(ReaderDTORequest request);
 
-    Reader update(Reader reader);
+    ReaderDTOResponse update(ReaderDTORequest request);
 
-    Reader findById(String id);
+    ReaderDTOResponse findById(String id);
 
-    Reader findByUsername(String username);
+    ReaderDTOResponse findByUsername(String username);
 
-    Reader findByEmail(String email);
+    ReaderDTOResponse findByEmail(String email);
 
     boolean existById(String id);
 
@@ -30,7 +31,7 @@ public interface IReaderService {
 
     long count();
 
-    List<Reader> listAll();
+    List<ReaderDTOResponse> listAll();
 
     boolean checkUserPassword(String username, String password);
 

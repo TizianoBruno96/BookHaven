@@ -13,5 +13,5 @@ public interface NotificationMapper {
     @Mapping(target = "reader", ignore = true)
     Notification toEntity(NotificationDTORequest request);
 
-    NotificationDTOResponse toDto(Notification entity);
+    NotificationDTOResponse toResponse(Notification entity);
 }

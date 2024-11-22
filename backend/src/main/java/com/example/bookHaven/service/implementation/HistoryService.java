@@ -3,56 +3,78 @@ package com.example.bookHaven.service.implementation;
 import com.example.bookHaven.entity.Book;
 import com.example.bookHaven.entity.History;
 import com.example.bookHaven.entity.Reader;
+import com.example.bookHaven.entity.dto.request.BookDTORequest;
+import com.example.bookHaven.entity.dto.request.HistoryDTORequest;
+import com.example.bookHaven.entity.dto.request.ReaderDTORequest;
+import com.example.bookHaven.entity.dto.response.HistoryDTOResponse;
+import com.example.bookHaven.repository.BookRepository;
 import com.example.bookHaven.repository.HistoryRepository;
+import com.example.bookHaven.repository.ReaderRepository;
+import com.example.bookHaven.repository.specification.BookSpecification;
 import com.example.bookHaven.service.IHistoryService;
+import com.example.bookHaven.service.mappers.HistoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class HistoryService implements IHistoryService {
 
     @Autowired
+    BookRepository bookRepository;
+    @Autowired
+    ReaderRepository readerRepository;
+    @Autowired
     private HistoryRepository repository;
+    @Autowired
+    private HistoryMapper mapper;
 
     @Override
-    public History create(History history) {
-        return repository.save(history);
+    public HistoryDTOResponse create(HistoryDTORequest request) {
+        History history = mapper.toEntity(request);
+        History savedHistory = repository.save(history);
+        return mapper.toResponse(savedHistory);
     }
 
     @Override
-    public History update(History history) {
-        if (!repository.existsById(history.getId())) {
-            throw new IllegalArgumentException("History with ID " + history.getId() + " does not exist.");
-        }
-        return repository.save(history);
+    public HistoryDTOResponse update(HistoryDTORequest request) {
+        History history = mapper.toEntity(request);
+        History updatedHistory = repository.save(history);
+        return mapper.toResponse(updatedHistory);
     }
 
     @Override
-    public History findById(String id) {
-        return repository.findById(id)
+    public HistoryDTOResponse findById(String id) {
+        History history = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("History with ID " + id + " not found."));
+        return mapper.toResponse(history);
     }
 
     @Override
-    public List<History> findByBook(String bookId) {
-        return repository.findByBookId(bookId);
+    public List<HistoryDTOResponse> findByBook(String bookId) {
+        return repository.findByBookId(bookId).stream().map(mapper::toResponse).toList();
     }
 
     @Override
-    public List<History> findByBook(Book book) {
-        return repository.findByBook(book);
+    public List<HistoryDTOResponse> findByBook(BookDTORequest bookDTORequest) {
+        List<Book> books = searchBooks(bookDTORequest);
+        List<History> histories = books.stream().flatMap(book -> repository.findByBook(book).stream()).toList();
+        return histories.stream().map(mapper::toResponse).toList();
     }
 
     @Override
-    public List<History> findByReader(String readerId) {
-        return repository.findByReaderId(readerId);
+    public List<HistoryDTOResponse> findByReader(String readerId) {
+        return repository.findByReaderId(readerId).stream().map(mapper::toResponse).toList();
     }
 
     @Override
-    public List<History> findByReader(Reader reader) {
-        return repository.findByReader(reader);
+    public List<HistoryDTOResponse> findByReader(ReaderDTORequest readerRequest) {
+        Reader reader = searchReaders(readerRequest);
+        if (reader == null) throw new NoSuchElementException("Reader not found.");
+        return repository.findByReader(reader).stream().map(mapper::toResponse).toList();
     }
 
     @Override
@@ -66,8 +88,9 @@ public class HistoryService implements IHistoryService {
     }
 
     @Override
-    public boolean existsByBook(Book book) {
-        return repository.existsByBook(book);
+    public boolean existsByBook(BookDTORequest bookDTORequest) {
+        List<Book> books = searchBooks(bookDTORequest);
+        return books.stream().anyMatch(book -> repository.existsByBook(book));
     }
 
     @Override
@@ -76,7 +99,9 @@ public class HistoryService implements IHistoryService {
     }
 
     @Override
-    public boolean existsByReader(Reader reader) {
+    public boolean existsByReader(ReaderDTORequest readerRequest) {
+        Reader reader = searchReaders(readerRequest);
+        if (reader == null) throw new NoSuchElementException("Reader not found.");
         return repository.existsByReader(reader);
     }
 
@@ -100,12 +125,19 @@ public class HistoryService implements IHistoryService {
     }
 
     @Override
-    public boolean deleteByBook(Book book) {
-        List<History> histories = repository.findByBook(book);
-        if (histories.isEmpty()) {
+    public boolean deleteByBook(BookDTORequest bookDTORequest) {
+        List<Book> books = searchBooks(bookDTORequest);
+        if (books.isEmpty()) {
             return false;
         }
-        repository.deleteAll(histories);
+        books.forEach(
+                book -> {
+                    List<History> histories = repository.findByBook(book);
+                    if (!histories.isEmpty()) {
+                        repository.deleteAll(histories);
+                    }
+                }
+        );
         return true;
     }
 
@@ -120,22 +152,37 @@ public class HistoryService implements IHistoryService {
     }
 
     @Override
-    public boolean deleteByReader(Reader reader) {
+    public boolean deleteByReader(ReaderDTORequest readerRequest) {
+        Reader reader = searchReaders(readerRequest);
+        if (reader == null) throw new NoSuchElementException("Reader not found.");
         List<History> histories = repository.findByReader(reader);
         if (histories.isEmpty()) {
             return false;
         }
         repository.deleteAll(histories);
         return true;
+
     }
 
     @Override
-    public List<History> listAll() {
-        return repository.findAll();
+    public List<HistoryDTOResponse> listAll() {
+        return repository.findAll().stream().map(mapper::toResponse).toList();
     }
 
     @Override
     public int count() {
         return (int) repository.count();
+    }
+
+    private List<Book> searchBooks(BookDTORequest request) {
+        Specification<Book> spec = Specification.where(BookSpecification.hasTitle(request.getTitle()))
+                .and(BookSpecification.hasGenre(request.getGenre()))
+                .and(BookSpecification.hasAuthor(request.getAuthor()));
+
+        return bookRepository.findAll(spec);
+    }
+
+    private Reader searchReaders(ReaderDTORequest request) {
+        return readerRepository.findByUsername(request.getUsername()).orElse(null);
     }
 }

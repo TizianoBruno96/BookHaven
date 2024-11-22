@@ -15,5 +15,5 @@ public interface ReviewMapper {
     @Mapping(target = "book", ignore = true)
     Review toEntity(ReviewDTORequest request);
 
-    ReviewDTOResponse toDto(Review entity);
+    ReviewDTOResponse toResponse(Review entity);
 }

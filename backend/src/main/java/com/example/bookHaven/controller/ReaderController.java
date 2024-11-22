@@ -1,6 +1,7 @@
 package com.example.bookHaven.controller;
 
-import com.example.bookHaven.entity.Reader;
+import com.example.bookHaven.entity.dto.request.ReaderDTORequest;
+import com.example.bookHaven.entity.dto.response.ReaderDTOResponse;
 import com.example.bookHaven.service.IReaderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,19 +18,19 @@ public class ReaderController {
     private IReaderService readerService;
 
     @PostMapping("/create")
-    public ResponseEntity<Reader> createReader(@RequestBody Reader reader) {
+    public ResponseEntity<ReaderDTOResponse> createReader(@RequestBody ReaderDTORequest request) {
         try {
-            Reader createdReader = readerService.create(reader);
+            ReaderDTOResponse createdReader = readerService.create(request);
             return ResponseEntity.ok(createdReader);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Reader> updateReader(@RequestBody Reader reader) {
+    public ResponseEntity<ReaderDTOResponse> updateReader(@RequestBody ReaderDTORequest request) {
         try {
-            Reader updatedReader = readerService.update(reader);
+            ReaderDTOResponse updatedReader = readerService.update(request);
             return ResponseEntity.ok(updatedReader);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
@@ -37,8 +38,8 @@ public class ReaderController {
     }
 
     @GetMapping("/findById/{id}")
-    public ResponseEntity<Reader> findById(@PathVariable String id) {
-        Reader reader = readerService.findById(id);
+    public ResponseEntity<ReaderDTOResponse> findById(@PathVariable String id) {
+        ReaderDTOResponse reader = readerService.findById(id);
         if (reader != null) {
             return ResponseEntity.ok(reader);
         } else {
@@ -47,8 +48,8 @@ public class ReaderController {
     }
 
     @GetMapping("/findByUsername/{username}")
-    public ResponseEntity<Reader> findByUsername(@PathVariable String username) {
-        Reader reader = readerService.findByUsername(username);
+    public ResponseEntity<ReaderDTOResponse> findByUsername(@PathVariable String username) {
+        ReaderDTOResponse reader = readerService.findByUsername(username);
         if (reader != null) {
             return ResponseEntity.ok(reader);
         } else {
@@ -57,8 +58,8 @@ public class ReaderController {
     }
 
     @GetMapping("/findByEmail/{email}")
-    public ResponseEntity<Reader> findByEmail(@PathVariable String email) {
-        Reader reader = readerService.findByEmail(email);
+    public ResponseEntity<ReaderDTOResponse> findByEmail(@PathVariable String email) {
+        ReaderDTOResponse reader = readerService.findByEmail(email);
         if (reader != null) {
             return ResponseEntity.ok(reader);
         } else {
@@ -109,8 +110,8 @@ public class ReaderController {
     }
 
     @GetMapping("/listAll")
-    public ResponseEntity<List<Reader>> listAllReaders() {
-        List<Reader> readers = readerService.listAll();
+    public ResponseEntity<List<ReaderDTOResponse>> listAllReaders() {
+        List<ReaderDTOResponse> readers = readerService.listAll();
         return ResponseEntity.ok(readers);
     }
 

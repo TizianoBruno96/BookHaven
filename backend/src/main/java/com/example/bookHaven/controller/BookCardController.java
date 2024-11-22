@@ -1,6 +1,8 @@
 package com.example.bookHaven.controller;
 
-import com.example.bookHaven.entity.BookCard;
+import com.example.bookHaven.entity.dto.request.BookCardDTORequest;
+import com.example.bookHaven.entity.dto.request.BookDTORequest;
+import com.example.bookHaven.entity.dto.response.BookCardDTOResponse;
 import com.example.bookHaven.service.IBookCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +18,15 @@ public class BookCardController {
     private IBookCardService bookCardService;
 
     @PostMapping("/create")
-    public ResponseEntity<BookCard> createBookCard(@RequestBody BookCard bookCard) {
-        BookCard createdBookCard = bookCardService.create(bookCard);
+    public ResponseEntity<BookCardDTOResponse> createBookCard(@RequestBody BookCardDTORequest bookCardRequest) {
+        BookCardDTOResponse createdBookCard = bookCardService.create(bookCardRequest);
         return ResponseEntity.ok(createdBookCard);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<BookCard> updateBookCard(@RequestBody BookCard bookCard) {
+    public ResponseEntity<BookCardDTOResponse> updateBookCard(@RequestBody BookCardDTORequest bookCardRequest) {
         try {
-            BookCard updatedBookCard = bookCardService.update(bookCard);
+            BookCardDTOResponse updatedBookCard = bookCardService.update(bookCardRequest);
             return ResponseEntity.ok(updatedBookCard);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);
@@ -32,9 +34,9 @@ public class BookCardController {
     }
 
     @GetMapping("/findById/{id}")
-    public ResponseEntity<BookCard> findById(@PathVariable String id) {
+    public ResponseEntity<BookCardDTOResponse> findById(@PathVariable String id) {
         try {
-            BookCard bookCard = bookCardService.findById(id);
+            BookCardDTOResponse bookCard = bookCardService.findById(id);
             return ResponseEntity.ok(bookCard);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
@@ -42,8 +44,14 @@ public class BookCardController {
     }
 
     @GetMapping("/findByBook/{bookId}")
-    public ResponseEntity<List<BookCard>> findByBook(@PathVariable String bookId) {
-        List<BookCard> bookCards = bookCardService.findByBook(bookId);
+    public ResponseEntity<List<BookCardDTOResponse>> findByBook(@PathVariable String bookId) {
+        List<BookCardDTOResponse> bookCards = bookCardService.findByBook(bookId);
+        return ResponseEntity.ok(bookCards);
+    }
+
+    @GetMapping("/findByBookDTO")
+    public ResponseEntity<List<BookCardDTOResponse>> findByBook(@RequestBody BookDTORequest bookRequest) {
+        List<BookCardDTOResponse> bookCards = bookCardService.findByBook(bookRequest);
         return ResponseEntity.ok(bookCards);
     }
 
@@ -59,6 +67,12 @@ public class BookCardController {
         return ResponseEntity.ok(exists);
     }
 
+    @GetMapping("/existsByBookDTO")
+    public ResponseEntity<Boolean> existsByBook(@RequestBody BookDTORequest bookRequest) {
+        boolean exists = bookCardService.existsByBook(bookRequest);
+        return ResponseEntity.ok(exists);
+    }
+
     @DeleteMapping("/deleteById/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable String id) {
         boolean isDeleted = bookCardService.deleteById(id);
@@ -71,16 +85,22 @@ public class BookCardController {
         return isDeleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
+    @DeleteMapping("/deleteByBookDTO")
+    public ResponseEntity<Void> deleteByBook(@RequestBody BookDTORequest bookRequest) {
+        boolean isDeleted = bookCardService.deleteByBook(bookRequest);
+        return isDeleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/listAll")
+    public ResponseEntity<List<BookCardDTOResponse>> listAllBookCards() {
+        List<BookCardDTOResponse> bookCards = bookCardService.listAll();
+        return ResponseEntity.ok(bookCards);
+    }
+
     @GetMapping("/count")
     public ResponseEntity<Integer> countBookCards() {
         int count = bookCardService.count();
         return ResponseEntity.ok(count);
-    }
-
-    @GetMapping("/listAll")
-    public ResponseEntity<List<BookCard>> listAllBookCards() {
-        List<BookCard> bookCards = bookCardService.listAll();
-        return ResponseEntity.ok(bookCards);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

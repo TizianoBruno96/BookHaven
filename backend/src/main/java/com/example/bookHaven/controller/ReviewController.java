@@ -1,6 +1,9 @@
 package com.example.bookHaven.controller;
 
-import com.example.bookHaven.entity.Review;
+import com.example.bookHaven.entity.dto.request.BookDTORequest;
+import com.example.bookHaven.entity.dto.request.ReaderDTORequest;
+import com.example.bookHaven.entity.dto.request.ReviewDTORequest;
+import com.example.bookHaven.entity.dto.response.ReviewDTOResponse;
 import com.example.bookHaven.service.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,94 +18,103 @@ public class ReviewController {
     @Autowired
     private IReviewService reviewService;
 
-    @PostMapping("/create")
-    public ResponseEntity<Review> createReview(@RequestBody Review review) {
-        Review createdReview = reviewService.create(review);
-        return ResponseEntity.ok(createdReview);
+    @PostMapping
+    public ResponseEntity<ReviewDTOResponse> createReview(@RequestBody ReviewDTORequest request) {
+        return ResponseEntity.ok(reviewService.create(request));
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Review> updateReview(@RequestBody Review review) {
-        try {
-            Review updatedReview = reviewService.update(review);
-            return ResponseEntity.ok(updatedReview);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+    @PutMapping
+    public ResponseEntity<ReviewDTOResponse> updateReview(@RequestBody ReviewDTORequest request) {
+        return ResponseEntity.ok(reviewService.update(request));
     }
 
-    @GetMapping("/findById/{id}")
-    public ResponseEntity<Review> findById(@PathVariable String id) {
-        try {
-            Review review = reviewService.findById(id);
-            return ResponseEntity.ok(review);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<ReviewDTOResponse> getReviewById(@PathVariable String id) {
+        return ResponseEntity.ok(reviewService.findById(id));
     }
 
-    @GetMapping("/findByBook/{bookId}")
-    public ResponseEntity<List<Review>> findByBook(@PathVariable String bookId) {
-        List<Review> reviews = reviewService.findByBook(bookId);
-        return ResponseEntity.ok(reviews);
+    @GetMapping("/book/{bookId}")
+    public ResponseEntity<List<ReviewDTOResponse>> getReviewsByBookId(@PathVariable String bookId) {
+        return ResponseEntity.ok(reviewService.findByBook(bookId));
     }
 
-    @GetMapping("/findByReader/{readerId}")
-    public ResponseEntity<List<Review>> findByReader(@PathVariable String readerId) {
-        List<Review> reviews = reviewService.findByReader(readerId);
-        return ResponseEntity.ok(reviews);
+    @PostMapping("/book")
+    public ResponseEntity<List<ReviewDTOResponse>> getReviewsByBook(@RequestBody BookDTORequest bookRequest) {
+        return ResponseEntity.ok(reviewService.findByBook(bookRequest));
     }
 
-    @GetMapping("/existsById/{id}")
-    public ResponseEntity<Boolean> existsById(@PathVariable String id) {
-        boolean exists = reviewService.existsById(id);
-        return ResponseEntity.ok(exists);
+    @GetMapping("/reader/{readerId}")
+    public ResponseEntity<List<ReviewDTOResponse>> getReviewsByReaderId(@PathVariable String readerId) {
+        return ResponseEntity.ok(reviewService.findByReader(readerId));
     }
 
-    @GetMapping("/existsByBook/{bookId}")
-    public ResponseEntity<Boolean> existsByBook(@PathVariable String bookId) {
-        boolean exists = reviewService.existsByBook(bookId);
-        return ResponseEntity.ok(exists);
+    @PostMapping("/reader")
+    public ResponseEntity<List<ReviewDTOResponse>> getReviewsByReader(@RequestBody ReaderDTORequest readerRequest) {
+        return ResponseEntity.ok(reviewService.findByReader(readerRequest));
     }
 
-    @GetMapping("/existsByReader/{readerId}")
-    public ResponseEntity<Boolean> existsByReader(@PathVariable String readerId) {
-        boolean exists = reviewService.existsByReader(readerId);
-        return ResponseEntity.ok(exists);
+    @GetMapping("/exists/{id}")
+    public ResponseEntity<Boolean> checkReviewExistsById(@PathVariable String id) {
+        return ResponseEntity.ok(reviewService.existsById(id));
     }
 
-    @DeleteMapping("/deleteById/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable String id) {
-        boolean isDeleted = reviewService.deleteById(id);
-        return isDeleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    @GetMapping("/exists/book/{bookId}")
+    public ResponseEntity<Boolean> checkReviewExistsByBookId(@PathVariable String bookId) {
+        return ResponseEntity.ok(reviewService.existsByBook(bookId));
     }
 
-    @DeleteMapping("/deleteByBook/{bookId}")
-    public ResponseEntity<Void> deleteByBook(@PathVariable String bookId) {
-        boolean isDeleted = reviewService.deleteByBook(bookId);
-        return isDeleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    @PostMapping("/exists/book")
+    public ResponseEntity<Boolean> checkReviewExistsByBook(@RequestBody BookDTORequest bookRequest) {
+        return ResponseEntity.ok(reviewService.existsByBook(bookRequest));
     }
 
-    @DeleteMapping("/deleteByReader/{readerId}")
-    public ResponseEntity<Void> deleteByReader(@PathVariable String readerId) {
-        boolean isDeleted = reviewService.deleteByReader(readerId);
-        return isDeleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    @GetMapping("/exists/reader/{readerId}")
+    public ResponseEntity<Boolean> checkReviewExistsByReaderId(@PathVariable String readerId) {
+        return ResponseEntity.ok(reviewService.existsByReader(readerId));
+    }
+
+    @PostMapping("/exists/reader")
+    public ResponseEntity<Boolean> checkReviewExistsByReader(@RequestBody ReaderDTORequest readerRequest) {
+        return ResponseEntity.ok(reviewService.existsByReader(readerRequest));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReviewById(@PathVariable String id) {
+        reviewService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/book/{bookId}")
+    public ResponseEntity<Void> deleteReviewByBookId(@PathVariable String bookId) {
+        reviewService.deleteByBook(bookId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/delete/book")
+    public ResponseEntity<Void> deleteReviewByBook(@RequestBody BookDTORequest bookRequest) {
+        reviewService.deleteByBook(bookRequest);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/reader/{readerId}")
+    public ResponseEntity<Void> deleteReviewByReaderId(@PathVariable String readerId) {
+        reviewService.deleteByReader(readerId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/delete/reader")
+    public ResponseEntity<Void> deleteReviewByReader(@RequestBody ReaderDTORequest readerRequest) {
+        reviewService.deleteByReader(readerRequest);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ReviewDTOResponse>> listAllReviews() {
+        return ResponseEntity.ok(reviewService.listAll());
     }
 
     @GetMapping("/count")
     public ResponseEntity<Integer> countReviews() {
-        int count = reviewService.count();
-        return ResponseEntity.ok(count);
-    }
-
-    @GetMapping("/listAll")
-    public ResponseEntity<List<Review>> listAllReviews() {
-        List<Review> reviews = reviewService.listAll();
-        return ResponseEntity.ok(reviews);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+        return ResponseEntity.ok(reviewService.count());
     }
 }
