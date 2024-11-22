@@ -1,7 +1,5 @@
 package com.example.bookHaven.entity.dto.request;
 
-import com.example.bookHaven.entity.Book;
-import com.example.bookHaven.entity.Reader;
 import lombok.Data;
 
 import java.time.Instant;

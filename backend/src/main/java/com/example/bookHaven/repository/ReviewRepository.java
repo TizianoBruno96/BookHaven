@@ -11,11 +11,18 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, String> {
     List<Review> findByBookId(String bookId);
+
     List<Review> findByBook(Book book);
+
     List<Review> findByReaderId(String readerId);
+
     List<Review> findByReader(Reader reader);
+
     boolean existsByBookId(String bookId);
+
     boolean existsByBook(Book book);
+
     boolean existsByReaderId(String readerId);
+
     boolean existsByReader(Reader reader);
 }

@@ -10,7 +10,10 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, String> {
     List<Notification> findByReaderId(String readerId);
+
     List<Notification> findByReader(Reader reader);
+
     boolean existsByReaderId(String readerId);
+
     boolean existsByReader(Reader reader);
 }

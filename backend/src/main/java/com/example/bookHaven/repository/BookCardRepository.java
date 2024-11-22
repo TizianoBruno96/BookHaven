@@ -10,7 +10,10 @@ import java.util.List;
 @Repository
 public interface BookCardRepository extends JpaRepository<BookCard, String> {
     List<BookCard> findByBookId(String bookId);
+
     List<BookCard> findByBook(Book book);
+
     boolean existsByBookId(String bookId);
+
     boolean existsByBook(Book book);
 }

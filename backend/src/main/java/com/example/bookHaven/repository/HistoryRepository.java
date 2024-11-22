@@ -11,11 +11,18 @@ import java.util.List;
 @Repository
 public interface HistoryRepository extends JpaRepository<History, String> {
     List<History> findByBookId(String bookId);
+
     List<History> findByBook(Book book);
+
     List<History> findByReaderId(String readerId);
+
     List<History> findByReader(Reader reader);
+
     boolean existsByBookId(String bookId);
+
     boolean existsByBook(Book book);
+
     boolean existsByReaderId(String readerId);
+
     boolean existsByReader(Reader reader);
 }

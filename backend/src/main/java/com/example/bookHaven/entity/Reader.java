@@ -12,53 +12,36 @@ import java.util.List;
 @Table(name = "reader")
 public class Reader {
 
-    public enum Gender {
-        MALE,
-        FEMALE,
-        OTHER
-    }
-
     @Id
     @Column(name = "reader_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-
     @NotNull
     @Column(unique = true, name = "email")
     private String email;
-
     @NotNull
     @Column(unique = true, name = "username")
     private String username;
-
     @NotNull
     @Column(name = "password")
     private String password;
-
     @Column(name = "age")
     private Integer age;
-
     @Enumerated(EnumType.STRING)
     @NotNull
     @Column(name = "gender")
     private Gender gender;
-
     @Column(name = "bio", length = 500)
     private String bio;
-
     @Lob
     @Column(name = "profile_pic")
     private byte[] profile_pic;
-
     @OneToMany(mappedBy = "reader", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Notification> notifications = new ArrayList<>();
-
     @OneToMany(mappedBy = "reader", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<History> histories = new ArrayList<>();
-
     @OneToMany(mappedBy = "reader", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
-
     @ManyToMany
     @JoinTable(
             name = "friendship",
@@ -66,4 +49,10 @@ public class Reader {
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
     private List<Reader> friends = new ArrayList<>();
+
+    public enum Gender {
+        MALE,
+        FEMALE,
+        OTHER
+    }
 }
