@@ -10,7 +10,12 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "book")
+@Table(
+        name = "book",
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {"title", "genre", "author"}
+        )
+)
 public class Book {
 
     @Id
