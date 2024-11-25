@@ -55,19 +55,19 @@ public class ReaderController {
 
     @GetMapping("/existsById/{id}")
     public ResponseEntity<?> existById(@PathVariable String id) {
-        boolean exists = readerService.existById(id);
+        boolean exists = readerService.existsById(id);
         return ResponseFactory.getResponse(OK, exists);
     }
 
     @GetMapping("/existsByUsername/{username}")
     public ResponseEntity<?> existByUsername(@PathVariable String username) {
-        boolean exists = readerService.existByUsername(username);
+        boolean exists = readerService.existsByUsername(username);
         return ResponseFactory.getResponse(OK, exists);
     }
 
     @GetMapping("/existsByEmail/{email}")
     public ResponseEntity<?> existByEmail(@PathVariable String email) {
-        boolean exists = readerService.existByEmail(email);
+        boolean exists = readerService.existsByEmail(email);
         return ResponseFactory.getResponse(OK, exists);
     }
 

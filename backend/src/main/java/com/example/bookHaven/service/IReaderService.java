@@ -17,11 +17,11 @@ public interface IReaderService {
 
     ReaderDTOResponse findByEmail(String email);
 
-    boolean existById(String id);
+    boolean existsById(String id);
 
-    boolean existByUsername(String username);
+    boolean existsByUsername(String username);
 
-    boolean existByEmail(String email);
+    boolean existsByEmail(String email);
 
     boolean deleteById(String id);
 

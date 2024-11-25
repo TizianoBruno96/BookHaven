@@ -110,9 +110,6 @@ public class HistoryService implements IHistoryService {
 
     @Override
     public boolean deleteById(String id) {
-        if (!repository.existsById(id)) {
-            throw new NoSuchElementException("History with ID " + id + " not found.");
-        }
         repository.deleteById(id);
         return !repository.existsById(id);
     }
@@ -124,7 +121,7 @@ public class HistoryService implements IHistoryService {
             throw new NoSuchElementException("History with book ID " + bookId + " not found.");
         }
         repository.deleteAll(histories);
-        return true;
+        return repository.findByBookId(bookId).isEmpty();
     }
 
     @Override
@@ -141,7 +138,7 @@ public class HistoryService implements IHistoryService {
                     }
                 }
         );
-        return true;
+        return searchBooks(bookRequest).stream().noneMatch(book -> repository.existsByBook(book));
     }
 
     @Override
@@ -151,7 +148,7 @@ public class HistoryService implements IHistoryService {
             throw new NoSuchElementException("Reader with ID " + readerId + " not found.");
         }
         repository.deleteAll(histories);
-        return true;
+        return !repository.existsByReaderId(readerId);
     }
 
     @Override
@@ -160,11 +157,10 @@ public class HistoryService implements IHistoryService {
         if (reader == null) throw new NoSuchElementException("Reader " + readerRequest.getUsername() + " not found.");
         List<History> histories = repository.findByReader(reader);
         if (histories.isEmpty()) {
-            return false;
+            return true;
         }
         repository.deleteAll(histories);
-        return true;
-
+        return repository.existsByReader(reader);
     }
 
     @Override

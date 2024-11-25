@@ -25,7 +25,7 @@ public class ReaderService implements IReaderService {
     @Override
     @Transactional
     public ReaderDTOResponse create(ReaderDTORequest request) {
-        if (existByUsername(request.getUsername())) {
+        if (existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Reader already exists. Please use update instead.");
         }
 
@@ -36,7 +36,7 @@ public class ReaderService implements IReaderService {
     @Override
     @Transactional
     public ReaderDTOResponse update(ReaderDTORequest request) {
-        if (!existByUsername(request.getUsername())) {
+        if (!existsByUsername(request.getUsername())) {
             throw new NoSuchElementException("Reader not found. Please use save instead.");
         }
 
@@ -63,28 +63,25 @@ public class ReaderService implements IReaderService {
     }
 
     @Override
-    public boolean existById(String id) {
+    public boolean existsById(String id) {
         return repository.existsById(id);
     }
 
     @Override
-    public boolean existByUsername(String username) {
+    public boolean existsByUsername(String username) {
         return repository.existsByUsername(username);
     }
 
     @Override
-    public boolean existByEmail(String email) {
+    public boolean existsByEmail(String email) {
         return repository.existsByEmail(email);
     }
 
     @Override
     @Transactional
     public boolean deleteById(String id) {
-        if (!existById(id)) {
-            return false;
-        }
         repository.deleteById(id);
-        return !existById(id);
+        return !repository.existsById(id);
     }
 
 

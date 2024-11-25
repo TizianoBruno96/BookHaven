@@ -27,7 +27,7 @@ public class BookService implements IBookService {
     @Override
     @Transactional
     public BookDTOResponse create(BookDTORequest request) {
-        if (existsByTitle(request.getTitle()) && existsByAuthor(request.getAuthor()) && existsByGenre(request.getGenre())) {
+        if (checkBook(request.getTitle(), request.getAuthor(), request.getGenre())) {
             throw new IllegalArgumentException("Book already exists. Please use update instead.");
         }
 
@@ -38,12 +38,13 @@ public class BookService implements IBookService {
     @Override
     @Transactional
     public BookDTOResponse update(BookDTORequest request) {
-        if (!(existsByTitle(request.getTitle()) && existsByAuthor(request.getAuthor()) && existsByGenre(request.getGenre()))) {
+        if (!checkBook(request.getTitle(), request.getAuthor(), request.getGenre())) {
             throw new NoSuchElementException("Book not found. Please use save instead.");
         }
 
         Book book = mapper.toEntity(request);
-        return mapper.toResponse(repository.save(book));
+        Book updatedBook = repository.save(book);
+        return mapper.toResponse(updatedBook);
     }
 
     @Override
@@ -86,28 +87,28 @@ public class BookService implements IBookService {
     @Transactional
     public boolean deleteById(String id) {
         repository.deleteById(id);
-        return existsById(id);
+        return !repository.existsById(id);
     }
 
     @Override
     @Transactional
     public boolean deleteByTitle(String title) {
         repository.deleteByTitle(title);
-        return existsByTitle(title);
+        return !repository.existsByTitle(title);
     }
 
     @Override
     @Transactional
     public boolean deleteByGenre(String genre) {
         repository.deleteByGenre(genre);
-        return existsByGenre(genre);
+        return !repository.existsByGenre(genre);
     }
 
     @Override
     @Transactional
     public boolean deleteByAuthor(String author) {
         repository.deleteByAuthor(author);
-        return existsByAuthor(author);
+        return !repository.existsByAuthor(author);
     }
 
     @Override
@@ -119,5 +120,9 @@ public class BookService implements IBookService {
     public List<BookDTOResponse> listAll() {
         List<Book> books = repository.findAll();
         return books.stream().map(mapper::toResponse).toList();
+    }
+
+    private boolean checkBook(String title, String author, String genre) {
+        return repository.existsByTitle(title) && repository.existsByAuthor(author) && repository.existsByGenre(genre);
     }
 }

@@ -113,18 +113,15 @@ public class ReviewService implements IReviewService {
 
     @Override
     public boolean deleteById(String id) {
-        if (!repository.existsById(id)) {
-            return false;
-        }
         repository.deleteById(id);
-        return true;
+        return !repository.existsById(id);
     }
 
     @Override
     public boolean deleteByBook(String bookId) {
         List<Review> reviews = repository.findByBookId(bookId);
         if (reviews.isEmpty()) {
-            return false;
+            return true;
         }
         repository.deleteAll(reviews);
         return repository.existsByBookId(bookId);
@@ -144,7 +141,7 @@ public class ReviewService implements IReviewService {
                     }
                 }
         );
-        return true;
+        return books.stream().noneMatch(book -> repository.existsByBook(book));
     }
 
     @Override
@@ -154,19 +151,19 @@ public class ReviewService implements IReviewService {
             return false;
         }
         repository.deleteAll(reviews);
-        return true;
+        return !repository.existsByReaderId(readerId);
     }
 
     @Override
     public boolean deleteByReader(ReaderDTORequest readerRequest) {
         Reader reader = searchReaders(readerRequest);
-        if (reader == null) throw new NoSuchElementException("Reader not found.");
+        if (reader == null) throw new NoSuchElementException("Reader " + readerRequest.getUsername() + " not found.");
         List<Review> reviews = repository.findByReader(reader);
         if (reviews.isEmpty()) {
-            return false;
+            return true;
         }
         repository.deleteAll(reviews);
-        return true;
+        return repository.findByReader(reader).isEmpty();
     }
 
     @Override

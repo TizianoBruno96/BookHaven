@@ -84,21 +84,18 @@ public class BookCardService implements IBookCardService {
 
     @Override
     public boolean deleteById(String id) {
-        if (!repository.existsById(id)) {
-            throw new NoSuchElementException("BookCard with ID " + id + " not found.");
-        }
         repository.deleteById(id);
-        return true;
+        return !repository.existsById(id);
     }
 
     @Override
     public boolean deleteByBook(String bookId) {
         List<BookCard> bookCards = repository.findByBookId(bookId);
         if (bookCards.isEmpty()) {
-            throw new NoSuchElementException("BookCard with Book ID " + bookId + " not found.");
+            return true;
         }
         repository.deleteAll(bookCards);
-        return true;
+        return repository.existsByBookId(bookId);
     }
 
     @Override
@@ -113,7 +110,7 @@ public class BookCardService implements IBookCardService {
                 repository.deleteAll(bookCards);
             }
         });
-        return true;
+        return books.stream().noneMatch(book -> repository.existsByBook(book));
     }
 
     @Override

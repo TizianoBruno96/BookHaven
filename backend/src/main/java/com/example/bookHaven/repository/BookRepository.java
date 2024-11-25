@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 public interface BookRepository extends JpaRepository<Book, String>, JpaSpecificationExecutor<Book> {
     boolean existsByTitle(String title);
 
-    boolean existsByGenre(String title);
+    boolean existsByGenre(String genre);
 
-    boolean existsByAuthor(String title);
+    boolean existsByAuthor(String author);
 
     void deleteByTitle(String title);
 

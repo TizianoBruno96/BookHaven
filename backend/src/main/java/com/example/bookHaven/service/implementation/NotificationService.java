@@ -84,6 +84,7 @@ public class NotificationService implements INotificationService {
     @Override
     public boolean deleteByReader(String readerId) {
         List<Notification> notifications = repository.findByReaderId(readerId);
+        if (notifications.isEmpty()) return true;
         repository.deleteAll(notifications);
         return repository.findByReaderId(readerId).isEmpty();
     }
@@ -94,10 +95,10 @@ public class NotificationService implements INotificationService {
         if (reader == null) throw new NoSuchElementException("Reader " + readerRequest.getUsername() + " not found");
         List<Notification> notifications = repository.findByReader(reader);
         if (notifications.isEmpty()) {
-            return false;
+            return true;
         }
         repository.deleteAll(notifications);
-        return true;
+        return !repository.existsByReader(reader);
     }
 
     @Override
