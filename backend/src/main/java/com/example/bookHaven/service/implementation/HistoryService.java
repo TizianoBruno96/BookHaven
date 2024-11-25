@@ -24,9 +24,9 @@ import java.util.NoSuchElementException;
 public class HistoryService implements IHistoryService {
 
     @Autowired
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
     @Autowired
-    ReaderRepository readerRepository;
+    private ReaderRepository readerRepository;
     @Autowired
     private HistoryRepository repository;
     @Autowired
@@ -49,7 +49,7 @@ public class HistoryService implements IHistoryService {
     @Override
     public HistoryDTOResponse findById(String id) {
         History history = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("History with ID " + id + " not found."));
+                .orElseThrow(() -> new NoSuchElementException("History with ID " + id + " not found."));
         return mapper.toResponse(history);
     }
 
@@ -73,7 +73,7 @@ public class HistoryService implements IHistoryService {
     @Override
     public List<HistoryDTOResponse> findByReader(ReaderDTORequest readerRequest) {
         Reader reader = searchReaders(readerRequest);
-        if (reader == null) throw new NoSuchElementException("Reader not found.");
+        if (reader == null) throw new NoSuchElementException("Reader " + readerRequest.getUsername() + " not found.");
         return repository.findByReader(reader).stream().map(mapper::toResponse).toList();
     }
 
@@ -88,8 +88,11 @@ public class HistoryService implements IHistoryService {
     }
 
     @Override
-    public boolean existsByBook(BookDTORequest bookDTORequest) {
-        List<Book> books = searchBooks(bookDTORequest);
+    public boolean existsByBook(BookDTORequest bookRequest) {
+        List<Book> books = searchBooks(bookRequest);
+        if (books.isEmpty()) {
+            throw new NoSuchElementException("Book " + bookRequest.getTitle() + ", " + bookRequest.getAuthor() + " not found.");
+        }
         return books.stream().anyMatch(book -> repository.existsByBook(book));
     }
 
@@ -101,34 +104,34 @@ public class HistoryService implements IHistoryService {
     @Override
     public boolean existsByReader(ReaderDTORequest readerRequest) {
         Reader reader = searchReaders(readerRequest);
-        if (reader == null) throw new NoSuchElementException("Reader not found.");
+        if (reader == null) throw new NoSuchElementException("Reader " + readerRequest.getUsername() + " not found.");
         return repository.existsByReader(reader);
     }
 
     @Override
     public boolean deleteById(String id) {
         if (!repository.existsById(id)) {
-            return false;
+            throw new NoSuchElementException("History with ID " + id + " not found.");
         }
         repository.deleteById(id);
-        return true;
+        return !repository.existsById(id);
     }
 
     @Override
     public boolean deleteByBook(String bookId) {
         List<History> histories = repository.findByBookId(bookId);
         if (histories.isEmpty()) {
-            return false;
+            throw new NoSuchElementException("History with book ID " + bookId + " not found.");
         }
         repository.deleteAll(histories);
         return true;
     }
 
     @Override
-    public boolean deleteByBook(BookDTORequest bookDTORequest) {
-        List<Book> books = searchBooks(bookDTORequest);
+    public boolean deleteByBook(BookDTORequest bookRequest) {
+        List<Book> books = searchBooks(bookRequest);
         if (books.isEmpty()) {
-            return false;
+            throw new NoSuchElementException("Book " + bookRequest.getTitle() + ", " + bookRequest.getAuthor() + " not found.");
         }
         books.forEach(
                 book -> {
@@ -145,7 +148,7 @@ public class HistoryService implements IHistoryService {
     public boolean deleteByReader(String readerId) {
         List<History> histories = repository.findByReaderId(readerId);
         if (histories.isEmpty()) {
-            return false;
+            throw new NoSuchElementException("Reader with ID " + readerId + " not found.");
         }
         repository.deleteAll(histories);
         return true;
@@ -154,7 +157,7 @@ public class HistoryService implements IHistoryService {
     @Override
     public boolean deleteByReader(ReaderDTORequest readerRequest) {
         Reader reader = searchReaders(readerRequest);
-        if (reader == null) throw new NoSuchElementException("Reader not found.");
+        if (reader == null) throw new NoSuchElementException("Reader " + readerRequest.getUsername() + " not found.");
         List<History> histories = repository.findByReader(reader);
         if (histories.isEmpty()) {
             return false;

@@ -20,10 +20,8 @@ public class NotificationService implements INotificationService {
 
     @Autowired
     private NotificationRepository repository;
-
     @Autowired
     private NotificationMapper mapper;
-
     @Autowired
     private ReaderRepository readerRepository;
 
@@ -56,7 +54,7 @@ public class NotificationService implements INotificationService {
     @Override
     public List<NotificationDTOResponse> findByReader(ReaderDTORequest readerRequest) {
         Reader reader = searchReaders(readerRequest);
-        if (reader == null) throw new NoSuchElementException("Reader not found");
+        if (reader == null) throw new NoSuchElementException("Reader " + readerRequest.getUsername() + " not found");
         return repository.findByReader(reader).stream().map(mapper::toResponse).toList();
     }
 
@@ -73,33 +71,27 @@ public class NotificationService implements INotificationService {
     @Override
     public boolean existsByReader(ReaderDTORequest readerRequest) {
         Reader reader = searchReaders(readerRequest);
-        if (reader == null) throw new NoSuchElementException("Reader not found");
+        if (reader == null) throw new NoSuchElementException("Reader " + readerRequest.getUsername() + " not found");
         return repository.existsByReader(reader);
     }
 
     @Override
     public boolean deleteById(String id) {
-        if (!repository.existsById(id)) {
-            return false;
-        }
         repository.deleteById(id);
-        return true;
+        return !repository.existsById(id);
     }
 
     @Override
     public boolean deleteByReader(String readerId) {
         List<Notification> notifications = repository.findByReaderId(readerId);
-        if (notifications.isEmpty()) {
-            return false;
-        }
         repository.deleteAll(notifications);
-        return true;
+        return repository.findByReaderId(readerId).isEmpty();
     }
 
     @Override
     public boolean deleteByReader(ReaderDTORequest readerRequest) {
         Reader reader = searchReaders(readerRequest);
-        if (reader == null) throw new NoSuchElementException("Reader not found");
+        if (reader == null) throw new NoSuchElementException("Reader " + readerRequest.getUsername() + " not found");
         List<Notification> notifications = repository.findByReader(reader);
         if (notifications.isEmpty()) {
             return false;

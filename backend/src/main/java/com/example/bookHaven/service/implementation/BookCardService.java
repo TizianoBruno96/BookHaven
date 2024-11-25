@@ -16,21 +16,19 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class BookCardService implements IBookCardService {
 
     @Autowired
-    BookCardRepository repository;
-
+    private BookCardRepository repository;
     @Autowired
-    BookRepository bookRepository;
-
+    private BookRepository bookRepository;
     @Autowired
-    BookCardMapper mapper;
-
+    private BookCardMapper mapper;
     @Autowired
-    BookMapper bookMapper;
+    private BookMapper bookMapper;
 
     @Override
     public BookCardDTOResponse create(BookCardDTORequest request) {
@@ -87,7 +85,7 @@ public class BookCardService implements IBookCardService {
     @Override
     public boolean deleteById(String id) {
         if (!repository.existsById(id)) {
-            return false;
+            throw new NoSuchElementException("BookCard with ID " + id + " not found.");
         }
         repository.deleteById(id);
         return true;
@@ -97,7 +95,7 @@ public class BookCardService implements IBookCardService {
     public boolean deleteByBook(String bookId) {
         List<BookCard> bookCards = repository.findByBookId(bookId);
         if (bookCards.isEmpty()) {
-            return false;
+            throw new NoSuchElementException("BookCard with Book ID " + bookId + " not found.");
         }
         repository.deleteAll(bookCards);
         return true;
@@ -107,7 +105,7 @@ public class BookCardService implements IBookCardService {
     public boolean deleteByBook(BookDTORequest bookRequest) {
         List<Book> books = searchBooks(bookRequest);
         if (books.isEmpty()) {
-            return false;
+            throw new NoSuchElementException("History with book: " + bookRequest.getTitle() + ", " + bookRequest.getAuthor() + " not found.");
         }
         books.forEach(book -> {
             List<BookCard> bookCards = repository.findByBookId(book.getId());
@@ -128,7 +126,6 @@ public class BookCardService implements IBookCardService {
     public int count() {
         return (int) repository.count();
     }
-
 
     private List<Book> searchBooks(BookDTORequest request) {
         Specification<Book> spec = Specification.where(BookSpecification.hasTitle(request.getTitle()))

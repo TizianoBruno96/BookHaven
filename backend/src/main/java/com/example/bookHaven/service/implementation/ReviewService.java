@@ -24,9 +24,9 @@ import java.util.NoSuchElementException;
 public class ReviewService implements IReviewService {
 
     @Autowired
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
     @Autowired
-    ReaderRepository readerRepository;
+    private ReaderRepository readerRepository;
     @Autowired
     private ReviewRepository repository;
     @Autowired
@@ -61,6 +61,9 @@ public class ReviewService implements IReviewService {
     @Override
     public List<ReviewDTOResponse> findByBook(BookDTORequest bookRequest) {
         List<Book> books = searchBooks(bookRequest);
+        if (books.isEmpty()) {
+            throw new NoSuchElementException("Book " + bookRequest.getTitle() + ", " + bookRequest.getAuthor() + " not found.");
+        }
         List<Review> reviews = books.stream().flatMap(book -> repository.findByBook(book).stream()).toList();
         return reviews.stream().map(mapper::toResponse).toList();
     }
@@ -73,7 +76,7 @@ public class ReviewService implements IReviewService {
     @Override
     public List<ReviewDTOResponse> findByReader(ReaderDTORequest readerRequest) {
         Reader reader = searchReaders(readerRequest);
-        if (reader == null) throw new NoSuchElementException("Reader not found.");
+        if (reader == null) throw new NoSuchElementException("Reader " + readerRequest.getUsername() + " not found.");
         return repository.findByReader(reader).stream().map(mapper::toResponse).toList();
     }
 
@@ -90,6 +93,9 @@ public class ReviewService implements IReviewService {
     @Override
     public boolean existsByBook(BookDTORequest bookRequest) {
         List<Book> books = searchBooks(bookRequest);
+        if (books.isEmpty()) {
+            throw new NoSuchElementException("Book " + bookRequest.getTitle() + ", " + bookRequest.getAuthor() + " not found.");
+        }
         return books.stream().anyMatch(book -> repository.existsByBook(book));
     }
 
@@ -101,7 +107,7 @@ public class ReviewService implements IReviewService {
     @Override
     public boolean existsByReader(ReaderDTORequest readerRequest) {
         Reader reader = searchReaders(readerRequest);
-        if (reader == null) throw new NoSuchElementException("Reader not found.");
+        if (reader == null) throw new NoSuchElementException("Reader " + readerRequest.getUsername() + " not found.");
         return repository.existsByReader(reader);
     }
 
@@ -121,14 +127,14 @@ public class ReviewService implements IReviewService {
             return false;
         }
         repository.deleteAll(reviews);
-        return true;
+        return repository.existsByBookId(bookId);
     }
 
     @Override
     public boolean deleteByBook(BookDTORequest bookRequest) {
         List<Book> books = searchBooks(bookRequest);
         if (books.isEmpty()) {
-            return false;
+            throw new NoSuchElementException("Book " + bookRequest.getTitle() + ", " + bookRequest.getAuthor() + " not found.");
         }
         books.forEach(
                 book -> {

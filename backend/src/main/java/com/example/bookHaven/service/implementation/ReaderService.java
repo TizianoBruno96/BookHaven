@@ -18,10 +18,9 @@ import java.util.Optional;
 public class ReaderService implements IReaderService {
 
     @Autowired
-    ReaderRepository repository;
-
+    private ReaderRepository repository;
     @Autowired
-    ReaderMapper mapper;
+    private ReaderMapper mapper;
 
     @Override
     @Transactional
@@ -93,14 +92,14 @@ public class ReaderService implements IReaderService {
     @Transactional
     public boolean deleteByUsername(String username) {
         repository.deleteByUsername(username);
-        return !existByUsername(username);
+        return !repository.existsByUsername(username);
     }
 
     @Override
     @Transactional
     public boolean deleteByEmail(String email) {
         repository.deleteByEmail(email);
-        return !existByEmail(email);
+        return !repository.existsByEmail(email);
     }
 
     @Override
@@ -126,17 +125,20 @@ public class ReaderService implements IReaderService {
         Optional<Reader> reader = repository.findById(readerId);
         Optional<Reader> friend = repository.findById(friendId);
 
-        if (reader.isPresent() && friend.isPresent()) {
-            Reader readerEntity = reader.get();
-            Reader friendEntity = friend.get();
-
-            if (!readerEntity.getFriends().contains(friendEntity)) {
-                readerEntity.getFriends().add(friendEntity);
-            }
-
-            repository.save(readerEntity);
-        } else {
-            throw new IllegalArgumentException("Either Reader or Friend not found");
+        if (reader.isEmpty()) {
+            throw new NoSuchElementException("Reader with id " + readerId + " not found.");
         }
+        if (friend.isEmpty()) {
+            throw new NoSuchElementException("Reader with id " + friendId + " not found.");
+        }
+
+        Reader readerEntity = reader.get();
+        Reader friendEntity = friend.get();
+
+        if (!readerEntity.getFriends().contains(friendEntity)) {
+            readerEntity.getFriends().add(friendEntity);
+        }
+
+        repository.save(readerEntity);
     }
 }

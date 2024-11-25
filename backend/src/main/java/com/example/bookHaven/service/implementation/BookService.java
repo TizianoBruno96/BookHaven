@@ -21,7 +21,6 @@ public class BookService implements IBookService {
 
     @Autowired
     private BookRepository repository;
-
     @Autowired
     private BookMapper mapper;
 
@@ -29,7 +28,7 @@ public class BookService implements IBookService {
     @Transactional
     public BookDTOResponse create(BookDTORequest request) {
         if (existsByTitle(request.getTitle()) && existsByAuthor(request.getAuthor()) && existsByGenre(request.getGenre())) {
-            throw new IllegalArgumentException("Book already exists.");
+            throw new IllegalArgumentException("Book already exists. Please use update instead.");
         }
 
         Book book = mapper.toEntity(request);
@@ -40,7 +39,7 @@ public class BookService implements IBookService {
     @Transactional
     public BookDTOResponse update(BookDTORequest request) {
         if (!(existsByTitle(request.getTitle()) && existsByAuthor(request.getAuthor()) && existsByGenre(request.getGenre()))) {
-            throw new NoSuchElementException("Book not found.");
+            throw new NoSuchElementException("Book not found. Please use save instead.");
         }
 
         Book book = mapper.toEntity(request);
