@@ -22,22 +22,14 @@ public class ReaderController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createReader(@RequestBody ReaderDTORequest request) {
-        try {
-            ReaderDTOResponse createdReader = readerService.create(request);
-            return ResponseFactory.getResponse(OK, createdReader);
-        } catch (IllegalArgumentException e) {
-            return ResponseFactory.getResponse(ResponseFactory.ResponseType.BAD_REQUEST);
-        }
+        ReaderDTOResponse createdReader = readerService.create(request);
+        return ResponseFactory.getResponse(OK, createdReader);
     }
 
     @PutMapping("/update")
     public ResponseEntity<?> updateReader(@RequestBody ReaderDTORequest request) {
-        try {
-            ReaderDTOResponse updatedReader = readerService.update(request);
-            return ResponseFactory.getResponse(OK, updatedReader);
-        } catch (NoSuchElementException e) {
-            return ResponseFactory.getResponse(NOT_FOUND);
-        }
+        ReaderDTOResponse updatedReader = readerService.update(request);
+        return ResponseFactory.getResponse(OK, updatedReader);
     }
 
     @GetMapping("/findById/{id}")

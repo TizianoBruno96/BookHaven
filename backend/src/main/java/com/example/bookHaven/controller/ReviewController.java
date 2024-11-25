@@ -11,9 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
-import static com.example.bookHaven.controller.utils.ResponseFactory.ResponseType.NOT_FOUND;
-import static com.example.bookHaven.controller.utils.ResponseFactory.ResponseType.OK;
+import static com.example.bookHaven.controller.utils.ResponseFactory.ResponseType.*;
 
 @RestController
 @RequestMapping("/review")
@@ -130,5 +130,15 @@ public class ReviewController {
     public ResponseEntity<?> countReviews() {
         int count = reviewService.count();
         return ResponseFactory.getResponse(OK, count);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseFactory.getResponse(BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<?> handleNoSuchElementException(NoSuchElementException ex) {
+        return ResponseFactory.getResponse(NOT_FOUND, ex.getMessage());
     }
 }

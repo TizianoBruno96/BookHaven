@@ -26,7 +26,7 @@ public class ReaderService implements IReaderService {
     @Transactional
     public ReaderDTOResponse create(ReaderDTORequest request) {
         if (existByUsername(request.getUsername())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Reader already exists. Please use update instead.");
         }
 
         Reader reader = mapper.toEntity(request);
@@ -37,7 +37,7 @@ public class ReaderService implements IReaderService {
     @Transactional
     public ReaderDTOResponse update(ReaderDTORequest request) {
         if (!existByUsername(request.getUsername())) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("Reader not found. Please use save instead.");
         }
 
         Reader reader = mapper.toEntity(request);

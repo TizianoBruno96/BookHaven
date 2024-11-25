@@ -36,7 +36,7 @@ public class ResponseFactory {
     }
 
     private static ResponseEntity<String> badParametersDefault() {
-        String message = "Inserisci i parametri corretti";
+        String message = "Insert correct parameters";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.TEXT_PLAIN)
                 .body(message);
@@ -66,7 +66,7 @@ public class ResponseFactory {
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
         MediaType type = MediaType.APPLICATION_JSON;
-        Object entity = "Errore di creazione della risposta";
+        Object entity = "An error occured while creating the response";
 
         for (Object arg : args) {
             if (arg instanceof HttpStatus status1) {
@@ -84,7 +84,7 @@ public class ResponseFactory {
     }
 
     private static ResponseEntity<String> defaultResponse() {
-        String message = "Errore di creazione della risposta";
+        String message = "An error occured while creating the response";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.TEXT_PLAIN)
                 .body(message);

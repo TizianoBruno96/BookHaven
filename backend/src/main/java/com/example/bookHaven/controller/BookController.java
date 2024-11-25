@@ -22,22 +22,14 @@ public class BookController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createBook(@RequestBody BookDTORequest bookDTORequest) {
-        try {
-            BookDTOResponse createdBook = bookService.create(bookDTORequest);
-            return ResponseFactory.getResponse(OK, createdBook);
-        } catch (IllegalArgumentException e) {
-            return ResponseFactory.getResponse(BAD_REQUEST, e.getMessage());
-        }
+        BookDTOResponse createdBook = bookService.create(bookDTORequest);
+        return ResponseFactory.getResponse(OK, createdBook);
     }
 
     @PutMapping("/update")
     public ResponseEntity<?> updateBook(@RequestBody BookDTORequest bookDTORequest) {
-        try {
-            BookDTOResponse updatedBook = bookService.update(bookDTORequest);
-            return ResponseFactory.getResponse(OK, updatedBook);
-        } catch (NoSuchElementException e) {
-            return ResponseFactory.getResponse(NOT_FOUND, e.getMessage());
-        }
+        BookDTOResponse updatedBook = bookService.update(bookDTORequest);
+        return ResponseFactory.getResponse(OK, updatedBook);
     }
 
     @GetMapping("/findById/{id}")

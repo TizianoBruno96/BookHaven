@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static com.example.bookHaven.controller.utils.ResponseFactory.ResponseType.*;
 
@@ -29,12 +30,8 @@ public class HistoryController {
 
     @PutMapping("/update")
     public ResponseEntity<?> updateHistory(@RequestBody HistoryDTORequest historyDTORequest) {
-        try {
-            HistoryDTOResponse updatedHistory = historyService.update(historyDTORequest);
-            return ResponseFactory.getResponse(OK, updatedHistory);
-        } catch (IllegalArgumentException e) {
-            return ResponseFactory.getResponse(BAD_REQUEST, e.getMessage());
-        }
+        HistoryDTOResponse updatedHistory = historyService.update(historyDTORequest);
+        return ResponseFactory.getResponse(OK, updatedHistory);
     }
 
     @GetMapping("/findById/{id}")
@@ -160,5 +157,10 @@ public class HistoryController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException ex) {
         return ResponseFactory.getResponse(BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<?> handleNoSuchElementException(NoSuchElementException ex) {
+        return ResponseFactory.getResponse(NOT_FOUND, ex.getMessage());
     }
 }
