@@ -37,8 +37,7 @@ public class ReviewController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getReviewById(@PathVariable String id) {
         ReviewDTOResponse review = reviewService.findById(id);
-        return review != null ? ResponseFactory.getResponse(OK, review) :
-                ResponseFactory.getResponse(NOT_FOUND);
+        return ResponseFactory.getResponse(OK, review);
     }
 
     @GetMapping("/book/{bookId}")

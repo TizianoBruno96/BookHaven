@@ -21,7 +21,7 @@ public class ResponseFactory {
                 } else if (args.length > 0) {
                     yield ok(args[0]);
                 }
-                yield defaultResponse();
+                yield ok();
             }
             case CUSTOM -> custom(args);
             case NOT_FOUND -> {
@@ -57,6 +57,10 @@ public class ResponseFactory {
     private static ResponseEntity<Object> ok(Object object) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(object);
+    }
+
+    private static ResponseEntity<Object> ok() {
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     private static ResponseEntity<?> custom(Object... args) {

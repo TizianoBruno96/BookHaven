@@ -42,7 +42,7 @@ public class NotificationService implements INotificationService {
     @Override
     public NotificationDTOResponse findById(String id) {
         Notification notification = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Notification with ID " + id + " not found."));
+                .orElseThrow(() -> new NoSuchElementException("Notification with ID " + id + " not found."));
         return mapper.toResponse(notification);
     }
 

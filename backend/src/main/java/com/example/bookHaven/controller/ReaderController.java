@@ -111,19 +111,14 @@ public class ReaderController {
     public ResponseEntity<?> addFriend(@RequestParam String readerId, @RequestParam String friendId) {
         try {
             readerService.addFriend(readerId, friendId);
-            return ResponseFactory.getResponse(OK);
-        } catch (IllegalArgumentException ex) {
-            return ResponseFactory.getResponse(BAD_REQUEST);
+        } catch (NoSuchElementException e) {
+            return  ResponseFactory.getResponse(NOT_FOUND, e.getMessage());
         }
+        return ResponseFactory.getResponse(OK);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException ex) {
         return ResponseFactory.getResponse(BAD_REQUEST, ex.getMessage());
-    }
-
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<?> handleNoSuchElementException(NoSuchElementException ex) {
-        return ResponseFactory.getResponse(NOT_FOUND, ex.getMessage());
     }
 }

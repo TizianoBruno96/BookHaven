@@ -49,7 +49,7 @@ public class ReviewService implements IReviewService {
     @Override
     public ReviewDTOResponse findById(String id) {
         Review review = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Review with ID " + id + " not found."));
+                .orElseThrow(() -> new NoSuchElementException("Review with ID " + id + " not found."));
         return mapper.toResponse(review);
     }
 
