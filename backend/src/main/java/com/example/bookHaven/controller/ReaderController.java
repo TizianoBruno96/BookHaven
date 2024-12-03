@@ -112,7 +112,7 @@ public class ReaderController {
         try {
             readerService.addFriend(readerId, friendId);
         } catch (NoSuchElementException e) {
-            return  ResponseFactory.getResponse(NOT_FOUND, e.getMessage());
+            return ResponseFactory.getResponse(NOT_FOUND, e.getMessage());
         }
         return ResponseFactory.getResponse(OK);
     }

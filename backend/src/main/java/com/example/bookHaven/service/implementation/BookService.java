@@ -55,13 +55,22 @@ public class BookService implements IBookService {
 
     @Override
     public List<BookDTOResponse> searchBooks(String title, String genre, String author) {
-        Specification<Book> spec = Specification.where(BookSpecification.hasTitle(title))
-                .and(BookSpecification.hasGenre(genre))
-                .and(BookSpecification.hasAuthor(author));
+        Specification<Book> spec = Specification.where(null);
+
+        if (title != null) {
+            spec = spec.and(BookSpecification.hasTitle(title));
+        }
+        if (genre != null) {
+            spec = spec.and(BookSpecification.hasGenre(genre));
+        }
+        if (author != null) {
+            spec = spec.and(BookSpecification.hasAuthor(author));
+        }
 
         List<Book> books = repository.findAll(spec);
         return books.stream().map(mapper::toResponse).toList();
     }
+
 
     @Override
     public boolean existsById(String id) {

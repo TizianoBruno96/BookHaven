@@ -43,10 +43,13 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchBooks(@RequestParam String title, @RequestParam String genre, @RequestParam String author) {
+    public ResponseEntity<?> searchBooks(@RequestParam(required = false) String title,
+                                         @RequestParam(required = false) String genre,
+                                         @RequestParam(required = false) String author) {
         List<BookDTOResponse> books = bookService.searchBooks(title, genre, author);
         return ResponseFactory.getResponse(OK, books);
     }
+
 
     @GetMapping("/existsById/{id}")
     public ResponseEntity<?> existsById(@PathVariable String id) {
