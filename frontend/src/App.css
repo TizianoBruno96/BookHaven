@@ -1,108 +1,132 @@
-body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f8f8f8;
-  color: #333;
-}
-
 .App {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .App-header {
-  background-color: #787878;
-  padding: 20px 0;
-  text-align: center;
+    background-color: #282c34;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
 }
 
-.App-header h1 {
-  color: white;
-  font-size: 3rem;
-  margin: 0;
-  font-weight: bold;
-  letter-spacing: 2px;
+.site-description {
+    margin-top: 10px;
+    font-size: 1.2rem;
 }
 
-.developer-info {
-  font-size: 1rem;
-  color: white;
-  margin-top: 10px;
+.auth-section {
+    position: absolute;
+    top: 20px;
+    right: 20px;
 }
 
-.App-footer {
-  background-color: #787878;
-  color: white;
-  text-align: center;
-  padding: 10px 0;
-  position: relative;
-  bottom: 0;
-  width: 100%;
+.sign-in-button {
+    padding: 8px 16px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background-color: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  overflow: hidden;
+.sign-in-button:hover {
+    background-color: #0056b3;
 }
 
-thead {
-  background-color: #8d6e63;
-  color: white;
+.user-profile-link {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
 }
 
-thead th {
-  text-align: left;
-  padding: 10px;
+.user-profile-link:hover {
+    background-color: #218838;
 }
 
-tbody tr {
-  border-bottom: 1px solid #ddd;
+.sign-in-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+    margin: 0;
 }
 
-tbody tr:nth-child(even) {
-  background-color: #f5f5f5;
+.form-container {
+    width: 100%;
+    max-width: 400px;
+    background-color: #333;
+    color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
 }
 
-tbody td {
-  padding: 10px;
-  text-align: left;
+.sign-in-form input,
+.sign-in-form select,
+.sign-in-form textarea,
+.sign-in-form button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+    background-color: #444;
+    color: white;
+    font-size: 14px;
 }
 
-tbody tr:hover {
-  background-color: #d7ccc8;
+button {
+    background-color: #555;
+    color: white;
+    cursor: pointer;
 }
 
-/* Links */
-a {
-  color: #5d4037;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-th:nth-child(3), td:nth-child(3) {
-  width: 100px;
+button:hover {
+    background-color: #777;
 }
 
 .error {
-  color: red;
-  font-weight: bold;
-  text-align: center;
-  margin-top: 20px;
+    color: red;
+    font-size: 14px;
 }
 
-.booklist-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+.App-footer {
+    background-color: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+    color: #6c757d;
+    margin-top: auto;
+}
+
+.App-main {
+    flex-grow: 1;
+}
+
+.book-list,
+.book-card-slider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #218838;
 }
