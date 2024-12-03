@@ -17,7 +17,6 @@ import static com.example.bookHaven.controller.utils.ResponseFactory.ResponseTyp
 
 @RestController
 @RequestMapping("/history")
-@CrossOrigin(origins = "http://localhost:3000")
 public class HistoryController {
 
     @Autowired
