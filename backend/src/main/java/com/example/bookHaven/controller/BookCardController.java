@@ -16,6 +16,7 @@ import static com.example.bookHaven.controller.utils.ResponseFactory.ResponseTyp
 
 @RestController
 @RequestMapping("/bookCard")
+@CrossOrigin(origins = "http://localhost:3000")
 public class BookCardController {
 
     @Autowired
