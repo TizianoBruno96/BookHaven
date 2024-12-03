@@ -101,7 +101,7 @@ public class ReaderController {
         return ResponseFactory.getResponse(OK, readers);
     }
 
-    @PostMapping("/checkPassword")
+    @GetMapping("/checkPassword")
     public ResponseEntity<?> checkPassword(@RequestParam String username, @RequestParam String password) {
         boolean isValid = readerService.checkUserPassword(username, password);
         return ResponseFactory.getResponse(OK, isValid);
