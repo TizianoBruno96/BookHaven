@@ -33,9 +33,6 @@ public class Reader {
     private Gender gender;
     @Column(name = "bio", length = 500)
     private String bio;
-    @Lob
-    @Column(name = "profile_pic")
-    private byte[] profile_pic;
     @OneToMany(mappedBy = "reader", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Notification> notifications = new ArrayList<>();
     @OneToMany(mappedBy = "reader", cascade = CascadeType.ALL, orphanRemoval = true)

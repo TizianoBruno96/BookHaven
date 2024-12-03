@@ -15,6 +15,5 @@ public class ReaderDTOResponse {
     private Integer age;
     private Reader.Gender gender;
     private String bio;
-    private byte[] profile_pic;
     private List<String> friendIds = new ArrayList<>();
 }

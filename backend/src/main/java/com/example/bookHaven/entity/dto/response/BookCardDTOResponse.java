@@ -7,5 +7,4 @@ public class BookCardDTOResponse {
     private String id;
     private String Title;
     private String body;
-    private byte[] image;
 }

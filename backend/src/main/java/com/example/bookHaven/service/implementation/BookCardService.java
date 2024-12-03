@@ -32,14 +32,24 @@ public class BookCardService implements IBookCardService {
 
     @Override
     public BookCardDTOResponse create(BookCardDTORequest request) {
+        Book book = bookRepository.findById(request.getBookId())
+                .orElseThrow(NoSuchElementException::new);
+
         BookCard bookCard = mapper.toEntity(request);
+
+        bookCard.setBook(book);
         BookCard savedBookCard = repository.save(bookCard);
         return mapper.toResponse(savedBookCard);
     }
 
     @Override
     public BookCardDTOResponse update(BookCardDTORequest request) {
+        Book book = bookRepository.findById(request.getBookId())
+                .orElseThrow(NoSuchElementException::new);
+
         BookCard bookCard = mapper.toEntity(request);
+
+        bookCard.setBook(book);
         BookCard updatedBookCard = repository.save(bookCard);
         return mapper.toResponse(updatedBookCard);
     }

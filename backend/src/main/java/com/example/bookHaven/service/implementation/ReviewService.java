@@ -34,14 +34,30 @@ public class ReviewService implements IReviewService {
 
     @Override
     public ReviewDTOResponse create(ReviewDTORequest request) {
+        Book book = bookRepository.findById(request.getBookId())
+                .orElseThrow(NoSuchElementException::new);
+        Reader reader = readerRepository.findById(request.getReaderId())
+                .orElseThrow(NoSuchElementException::new);
+
         Review review = mapper.toEntity(request);
+
+        review.setBook(book);
+        review.setReader(reader);
         Review savedReview = repository.save(review);
         return mapper.toResponse(savedReview);
     }
 
     @Override
     public ReviewDTOResponse update(ReviewDTORequest request) {
+        Book book = bookRepository.findById(request.getBookId())
+                .orElseThrow(NoSuchElementException::new);
+        Reader reader = readerRepository.findById(request.getReaderId())
+                .orElseThrow(NoSuchElementException::new);
+
         Review review = mapper.toEntity(request);
+
+        review.setBook(book);
+        review.setReader(reader);
         Review updatedReview = repository.save(review);
         return mapper.toResponse(updatedReview);
     }

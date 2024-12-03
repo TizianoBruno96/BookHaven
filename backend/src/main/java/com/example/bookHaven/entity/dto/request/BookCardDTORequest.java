@@ -6,6 +6,5 @@ import lombok.Data;
 public class BookCardDTORequest {
     private String Title;
     private String body;
-    private byte[] image;
     private String bookId;
 }

@@ -11,5 +11,4 @@ public class ReaderDTORequest {
     private Integer age;
     private Gender gender;
     private String bio;
-    private byte[] profile_pic;
 }

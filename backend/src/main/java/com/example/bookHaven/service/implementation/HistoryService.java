@@ -34,14 +34,30 @@ public class HistoryService implements IHistoryService {
 
     @Override
     public HistoryDTOResponse create(HistoryDTORequest request) {
+        Book book = bookRepository.findById(request.getBookId())
+                .orElseThrow(NoSuchElementException::new);
+        Reader reader = readerRepository.findById(request.getReaderId())
+                .orElseThrow(NoSuchElementException::new);
+
         History history = mapper.toEntity(request);
+
+        history.setBook(book);
+        history.setReader(reader);
         History savedHistory = repository.save(history);
         return mapper.toResponse(savedHistory);
     }
 
     @Override
     public HistoryDTOResponse update(HistoryDTORequest request) {
+        Book book = bookRepository.findById(request.getBookId())
+                .orElseThrow(NoSuchElementException::new);
+        Reader reader = readerRepository.findById(request.getReaderId())
+                .orElseThrow(NoSuchElementException::new);
+
         History history = mapper.toEntity(request);
+
+        history.setBook(book);
+        history.setReader(reader);
         History updatedHistory = repository.save(history);
         return mapper.toResponse(updatedHistory);
     }

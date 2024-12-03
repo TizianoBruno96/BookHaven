@@ -22,10 +22,6 @@ public class BookCard {
     @Column(name = "body", length = 2000)
     private String body;
 
-    @Lob
-    @Column(name = "image")
-    private byte[] image;
-
     @ManyToOne
     @NotNull
     @JoinColumn(name = "book_id")

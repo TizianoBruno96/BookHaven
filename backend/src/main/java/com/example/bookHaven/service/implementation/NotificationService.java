@@ -27,14 +27,24 @@ public class NotificationService implements INotificationService {
 
     @Override
     public NotificationDTOResponse create(NotificationDTORequest request) {
+        Reader reader = readerRepository.findById(request.getReaderId())
+                .orElseThrow(NoSuchElementException::new);
+
         Notification notification = mapper.toEntity(request);
+
+        notification.setReader(reader);
         Notification savedNotification = repository.save(notification);
         return mapper.toResponse(savedNotification);
     }
 
     @Override
     public NotificationDTOResponse update(NotificationDTORequest request) {
+        Reader reader = readerRepository.findById(request.getReaderId())
+                .orElseThrow(NoSuchElementException::new);
+
         Notification notification = mapper.toEntity(request);
+
+        notification.setReader(reader);
         Notification updatedNotification = repository.save(notification);
         return mapper.toResponse(updatedNotification);
     }
