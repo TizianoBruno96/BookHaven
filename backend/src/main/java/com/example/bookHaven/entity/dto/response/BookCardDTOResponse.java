@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class BookCardDTOResponse {
     private String id;
-    private String Title;
+    private String title;
     private String body;
 }

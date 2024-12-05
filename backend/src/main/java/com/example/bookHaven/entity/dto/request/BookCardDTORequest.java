@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class BookCardDTORequest {
-    private String Title;
+    private String title;
     private String body;
     private String bookId;
 }

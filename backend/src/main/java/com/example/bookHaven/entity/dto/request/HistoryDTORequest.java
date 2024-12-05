@@ -6,7 +6,7 @@ import java.time.Instant;
 
 @Data
 public class HistoryDTORequest {
-    private Instant StartedReadAt;
+    private Instant startedReadAt;
     private Instant last_read_at;
     private Boolean isRead;
     private String readerId;

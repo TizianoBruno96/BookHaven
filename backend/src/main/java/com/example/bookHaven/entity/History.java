@@ -17,7 +17,7 @@ public class History {
     private String id;
 
     @Column(name = "started_read_at")
-    private Instant StartedReadAt;
+    private Instant startedReadAt;
 
     @Column(name = "last_read_at")
     private Instant last_read_at;
