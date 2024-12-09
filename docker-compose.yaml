@@ -1,6 +1,4 @@
-services:
-    backend:
-        
+services:        
     frontend:
         build:
           context: frontend
