@@ -1,10 +1,11 @@
 .book-cards-container {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 20px;
     justify-content: center;
-    margin-top: 20px;
-    padding: 0 10px;
+    margin: 20px auto;
+    padding: 10px;
+    max-width: 1200px;
 }
 
 .book-card {
@@ -15,6 +16,7 @@
     padding: 15px;
     cursor: pointer;
     transition: transform 0.3s ease-in-out;
+    overflow: hidden;
 }
 
 .book-card:hover {
@@ -76,26 +78,19 @@
     transform: translateY(-50%);
 }
 
-@media (max-width: 1200px) {
-    .book-cards-container {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-@media (max-width: 992px) {
-    .book-cards-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
 @media (max-width: 768px) {
-    .book-cards-container {
-        grid-template-columns: repeat(2, 1fr);
+    .pagination-btn.left,
+    .pagination-btn.right {
+        position: relative;
+        top: unset;
+        transform: unset;
+        margin: 10px;
     }
 }
 
 @media (max-width: 576px) {
-    .book-cards-container {
-        grid-template-columns: 1fr;
+    .pagination {
+        flex-direction: column;
+        gap: 5px;
     }
 }
