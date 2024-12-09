@@ -8,7 +8,7 @@ const BookDetail = () => {
     const [bookCards, setBookCards] = useState([]);
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();  // Crea l'istanza del navigatore
+    const navigate = useNavigate();
 
     const formatDate = (date) => {
         const d = new Date(date);
@@ -27,7 +27,7 @@ const BookDetail = () => {
             const data = await response.json();
             setBook(data);
         } catch (err) {
-            setError(err.message);
+            setError(err.message);  // Handle the error and don't rethrow
         }
     };
 
@@ -40,17 +40,20 @@ const BookDetail = () => {
             const data = await response.json();
             setBookCards(data);
         } catch (err) {
-            setError(err.message);
+            setError(err.message);  // Handle the error and don't rethrow
         }
     };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const fetchData = async () => {
+        await fetchBookDetails();
+        await fetchBookCards();
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            fetchBookDetails();
-            fetchBookCards();
-        };
-        fetchData();
-    }, [id]);
+        fetchData().catch((err) => setError(err.message));
+    }, [fetchData, id]);
+
 
     const handlePrevCard = () => {
         setCurrentCardIndex((prevIndex) =>
@@ -78,7 +81,6 @@ const BookDetail = () => {
                 <button onClick={() => navigate('/')} className="btn btn-secondary mb-3">
                     Back to Home
                 </button>
-                {/* Pulsante Back */}
                 <h2>{book.title}</h2>
                 <p><strong>Author:</strong> {book.author}</p>
                 <p><strong>Genre:</strong> {book.genre}</p>
